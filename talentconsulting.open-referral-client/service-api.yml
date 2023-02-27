@@ -1,0 +1,2527 @@
+﻿
+---
+openapi: 3.0.1
+info:
+  title: Human services API
+  description: |-
+    An API to read open data compliant with Open Referral as extended for English local government and health data. Loaded with Bristol sample (historic) service data.
+
+    Web methods support JSON format outputs by default. Hence https://api.porism.com/ServiceDirectoryService/services returns the same as https://api.porism.com/ServiceDirectoryService/services.json
+
+    Implementations supporting CSV append ".csv" to the web method, eg https://api.porism.com/ServiceDirectoryService/services.csv
+
+    <a href="https://developers.openreferraluk.org/Guidance/" target="_blank">Guidance on the data structure and each field</a>
+    <a href="https://developers.openreferraluk.org/API-Guidance/" target="_blank">Guidance on using the API</a>
+    <a href="https://openreferraluk.org/contact-us/" target="_blank">Contacts and to raise issues</a>
+    <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence" target="_blank">License of API</a>
+servers:
+- url: http://api.porism.com/ServiceDirectoryService
+  description: Generated server url
+tags:
+- name: Locations
+- name: Services
+- name: Organizations
+- name: Reviews
+- name: Taxonomies
+- name: Vocabularies
+paths:
+  "/services/{id}":
+    get:
+      tags:
+      - Services
+      summary: Get a single service
+      operationId: getService
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Service_ServiceView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    put:
+      tags:
+      - Services
+      summary: Update a service
+      operationId: putService
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Service_ServiceView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Service_ServiceView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/taxonomies/{id}":
+    get:
+      tags:
+      - Taxonomies
+      summary: Get a single taxonomy
+      operationId: getTaxonomy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Taxonomy_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    put:
+      tags:
+      - Taxonomies
+      summary: Update a taxonomy
+      operationId: putTaxonomy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Taxonomy_BasicView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Taxonomy_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/reviews/{id}":
+    get:
+      tags:
+      - Reviews
+      summary: Get a single review
+      operationId: getReview
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Review_ReviewView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    put:
+      tags:
+      - Reviews
+      summary: Update a review
+      operationId: putReview
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Review_ReviewView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Review_ReviewView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/organizations/{id}":
+    get:
+      tags:
+      - Organizations
+      summary: Get a single organization
+      operationId: getOrganization
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Organization_OrganizationView"
+            text/csv:
+              schema:
+                "$ref": "#/components/schemas/Organization_OrganizationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    put:
+      tags:
+      - Organizations
+      summary: Update an organization
+      operationId: putOrganization
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Organization_OrganizationView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Organization_OrganizationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/locations/{id}":
+    get:
+      tags:
+      - Locations
+      summary: Get a single location
+      operationId: getLocation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Location_LocationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    put:
+      tags:
+      - Locations
+      summary: Update a location
+      operationId: putLocation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Location_LocationView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Location_LocationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services/validate":
+    post:
+      tags:
+      - Services
+      summary: Validate service JSON
+      operationId: validateService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Service_ServiceView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ValidationResult_ServiceView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services/richness":
+    get:
+      tags:
+      - Services
+      summary: Richness of a selection of services
+      operationId: richnessServices
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Ratings_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+    post:
+      tags:
+      - Services
+      summary: Richness of a single service
+      operationId: richnessService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Service_BasicView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Rating_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services/":
+    post:
+      tags:
+      - Services
+      summary: Create a service
+      operationId: postService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Service_ServiceView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Service_ServiceView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/taxonomies/":
+    post:
+      tags:
+      - Taxonomies
+      summary: Create a taxonomy
+      operationId: postTaxonomy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Taxonomy_BasicView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Taxonomy_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/reviews/":
+    post:
+      tags:
+      - Reviews
+      summary: Create a review
+      operationId: postReview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Review_ReviewView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Review_ReviewView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/organizations/":
+    post:
+      tags:
+      - Organizations
+      summary: Create an organization
+      operationId: postReview_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Organization_OrganizationView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Organization_OrganizationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/locations/":
+    post:
+      tags:
+      - Locations
+      summary: Create a location
+      operationId: postLocation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Location_LocationView"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Location_LocationView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/taxonomies":
+    get:
+      tags:
+      - Taxonomies
+      summary: Get all taxonomies
+      operationId: getTaxonomies
+      parameters:
+      - name: text
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: parent_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: vocabulary
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: needs
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: circumstances
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: root_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PageTaxonomy_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services/{id}/validate":
+    get:
+      tags:
+      - Services
+      summary: Validate a single service
+      operationId: validateService_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ValidationResult_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services/{id}/richness":
+    get:
+      tags:
+      - Services
+      summary: Richness of a single service
+      operationId: richnessService_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Rating_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/services":
+    get:
+      tags:
+      - Services
+      summary: Get all services
+      description: Note that the objects returned by this method contains a subset
+        of the properties shown in the example.
+      operationId: getServices
+      parameters:
+      - name: taxonomy_type
+        in: query
+        description: An array of types of taxonomy to filter by. If there is more
+          than one of the taxonomy_type, taxonomy_id and vocabulary parameters specified
+          there must be the same number of each.
+        required: false
+        content:
+          "*/*":
+            schema:
+              type: string
+              enum:
+              - organization
+              - eligibility
+              - cost_option
+              - area
+              - service
+      - name: taxonomy_id
+        in: query
+        description: An array of taxonomy identifiers to filter by. If there is more
+          than one of the taxonomy_type, taxonomy_id and vocabulary parameters specified
+          there must be the same number of each.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: vocabulary
+        in: query
+        description: An array of vocabulary identifiers to filter by. If there is
+          more than one of the taxonomy_type, taxonomy_id and vocabulary parameters
+          specified there must be the same number of each. This parameter may not
+          be required if all taxonomy identifiers are unique across all vocabularies
+          used, as will be the case where all taxonomy identifiers are prefixed with
+          a CURIE.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: need
+        in: query
+        description: An array of identifiers from the Needs taxonomy. The query will
+          return services of all service types that are mapped against any given need.
+          THIS IS AN EXTENSION FOR USERS OF LGA TAXONOMIES ONLY
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: circumstance
+        in: query
+        description: An array of identifiers from the Circumstances taxonomy. The
+          query will return services of all service types that are mapped against
+          any given circumstance. Using an OR. THIS IS AN EXTENSION FOR USERS OF LGA
+          TAXONOMIES ONLY
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: start_time
+        in: query
+        description: An array of start times. This will match services that have a
+          start time equal to or more that the specified value, using the OR operator.
+          If there is more than one of the start_time, end_time and day parameters
+          specified there must be the same number of each.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: end_time
+        in: query
+        description: An array of end times. This will match services that have a end
+          time equal to or more that the specified value, using the OR operator. If
+          there is more than one of the start_time, end_time and day parameters specified
+          there must be the same number of each.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: day
+        in: query
+        description: An array of days. This will match services that have a day equal
+          to or more that the specified value, using the OR operator. If there is
+          more than one of the start_time, end_time and day parameters specified there
+          must be the same number of each.
+        required: false
+        content:
+          "*/*":
+            schema:
+              type: string
+              enum:
+              - SU
+              - MO
+              - TU
+              - WE
+              - TH
+              - FR
+              - SA
+      - name: postcode
+        in: query
+        description: The postcode of the person who wishes to use the service. In
+          order to find services that are within a reasonable distance.
+        required: false
+        schema:
+          type: string
+      - name: proximity
+        in: query
+        description: The distance in metres that the person is willing to travel from
+          the target postcode.
+        required: false
+        schema:
+          type: number
+          format: double
+      - name: coverage
+        in: query
+        description: The postcode to use to check that a service applies to the specified
+          area.
+        required: false
+        schema:
+          type: string
+      - name: text
+        in: query
+        description: Use text to perform a keyword search on services. This performs
+          a full text search on the service title and description and ranks the results
+          by relevancy.
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: The page of the results to show. Page numbers start at 1.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: per_page
+        in: query
+        description: The number of results per page to show.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 50
+      - name: minimum_age
+        in: query
+        description: Return services with a minimum age of at least the specified
+          value.
+        required: false
+        schema:
+          type: number
+          format: float
+      - name: maximum_age
+        in: query
+        description: Return services with a maximum age of at equal to or below the
+          specified value.
+        required: false
+        schema:
+          type: number
+          format: float
+      - name: include
+        in: query
+        description: Enter the name of a service field and it will be included in
+          the result. e.g. service_at_locations
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: service_type
+        in: query
+        description: An array of service type identifiers. The query will return all
+          services of ANY given service type. THIS EXTENSION MAY BE REPLACED BY A
+          GENERIC SYNTAX FOR COMBINING TERMS FROM ANY TAXONOMY
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PageService_ServiceBasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/reviews":
+    get:
+      tags:
+      - Reviews
+      summary: Get all reviews
+      description: Note that the objects returned by this method contains a subset
+        of the properties shown in the example.
+      operationId: getReviews
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Review_ReviewBasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/organizations":
+    get:
+      tags:
+      - Organizations
+      summary: Get all organizations
+      description: Note that the objects returned by this method contains a subset
+        of the properties shown in the example.
+      operationId: getOrganizations
+      parameters:
+      - name: taxonomy
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: scheme
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Organization_BasicView"
+            text/csv:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Organization_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/locations":
+    get:
+      tags:
+      - Locations
+      summary: Get all locations
+      description: Note that the objects returned by this method contains a subset
+        of the properties shown in the example.
+      operationId: getLocations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Location_BasicView"
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+  "/vocabularies":
+    get:
+      tags:
+      - Vocabularies
+      summary: Get all vocabularies
+      operationId: getVocabularies
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '500':
+          description: Internal Server Error
+          content:
+            "*/*":
+              schema:
+                type: object
+components:
+  schemas:
+    Contact_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        title:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        phones:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Phone_ServiceView"
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+    CostOption_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        option:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        amount:
+          type: number
+          format: float
+        amount_description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        linkId:
+          type: string
+        valid_from:
+          type: string
+          format: date-time
+        valid_to:
+          type: string
+          format: date-time
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+    EligibilityTaxonomy_ServiceView:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        vocabulary:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        parent:
+          "$ref": "#/components/schemas/Taxonomy_ServiceView"
+    Eligibility_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        eligibility:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        linkId:
+          type: string
+        minimum_age:
+          type: number
+          format: float
+        maximum_age:
+          type: number
+          format: float
+        taxonomys:
+          type: array
+          items:
+            "$ref": "#/components/schemas/EligibilityTaxonomy_ServiceView"
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+    Funding_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        source:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+    HolidaySchedule_ServiceView:
+      required:
+      - closed
+      - end_date
+      - id
+      - start_date
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        closed:
+          type: boolean
+        opens_at:
+          type: string
+          format: date-time
+        closes_at:
+          type: string
+          format: date-time
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+        service_at_location:
+          "$ref": "#/components/schemas/ServiceAtLocation_ServiceView"
+    Language_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        language:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        serviceId:
+          "$ref": "#/components/schemas/Service_ServiceView"
+    LinkTaxonomy_ServiceView:
+      required:
+      - id
+      - link_type
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        link_type:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        link_id:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        taxonomy:
+          "$ref": "#/components/schemas/Taxonomy_ServiceView"
+    Location_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        physical_addresses:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PhysicalAddress_ServiceView"
+    Organization_ServiceView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    Phone_ServiceView:
+      required:
+      - id
+      - number
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        number:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        contact:
+          "$ref": "#/components/schemas/Contact_ServiceView"
+    PhysicalAddress_ServiceView:
+      required:
+      - address_1
+      - city
+      - country
+      - id
+      - postal_code
+      - state_province
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        city:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        country:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        address_1:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        state_province:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        postal_code:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        location:
+          "$ref": "#/components/schemas/Location_ServiceView"
+    RegularSchedule_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        dtstart:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        freq:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        interval:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        byday:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        bymonthday:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        opens_at:
+          type: string
+          format: date-time
+        closes_at:
+          type: string
+          format: date-time
+        valid_from:
+          type: string
+          format: date-time
+        valid_to:
+          type: string
+          format: date-time
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+        service_at_location:
+          "$ref": "#/components/schemas/ServiceAtLocation_ServiceView"
+    Review_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        title:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date-time
+        score:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        widget:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        organization:
+          "$ref": "#/components/schemas/Organization_ServiceView"
+    ServiceArea_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        extent:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        serviceId:
+          "$ref": "#/components/schemas/Service_ServiceView"
+        linkId:
+          type: string
+        service_area:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    ServiceAtLocation_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        holidayScheduleCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HolidaySchedule_ServiceView"
+        regular_schedule:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RegularSchedule_ServiceView"
+        location:
+          "$ref": "#/components/schemas/Location_ServiceView"
+    ServiceTaxonomy_ServiceView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        linkId:
+          type: string
+        service:
+          "$ref": "#/components/schemas/Service_ServiceView"
+        taxonomy:
+          "$ref": "#/components/schemas/Taxonomy_ServiceView"
+    Service_ServiceView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+        service_areas:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceArea_ServiceView"
+        fundings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Funding_ServiceView"
+        regular_schedules:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RegularSchedule_ServiceView"
+        eligibilitys:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Eligibility_ServiceView"
+        service_at_locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceAtLocation_ServiceView"
+        cost_options:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CostOption_ServiceView"
+        reviews:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Review_ServiceView"
+        organization:
+          "$ref": "#/components/schemas/Organization_ServiceView"
+        contacts:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Contact_ServiceView"
+        holiday_schedules:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HolidaySchedule_ServiceView"
+        service_taxonomys:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceTaxonomy_ServiceView"
+        languages:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Language_ServiceView"
+    Taxonomy_ServiceView:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        vocabulary:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        linkTaxonomyCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/LinkTaxonomy_ServiceView"
+        serviceTaxonomyCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceTaxonomy_ServiceView"
+        parent:
+          "$ref": "#/components/schemas/Taxonomy_ServiceView"
+    LinkTaxonomy_BasicView:
+      required:
+      - id
+      - link_type
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        link_type:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        link_id:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        taxonomy:
+          "$ref": "#/components/schemas/Taxonomy_BasicView"
+    ServiceTaxonomy_BasicView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        linkId:
+          type: string
+        service:
+          "$ref": "#/components/schemas/Service_BasicView"
+    Service_BasicView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+    Taxonomy_BasicView:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        vocabulary:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        linkTaxonomyCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/LinkTaxonomy_BasicView"
+        serviceTaxonomyCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceTaxonomy_BasicView"
+        parent:
+          "$ref": "#/components/schemas/Taxonomy_BasicView"
+    Organization_ReviewView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    Review_ReviewView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        title:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date-time
+        score:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        widget:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        service:
+          "$ref": "#/components/schemas/Service_ReviewView"
+        organization:
+          "$ref": "#/components/schemas/Organization_ReviewView"
+    Service_ReviewView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+    Organization_OrganizationView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        reviews:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Review_OrganizationView"
+        services:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Service_OrganizationView"
+    Review_OrganizationView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        title:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date-time
+        score:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        widget:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        organization:
+          "$ref": "#/components/schemas/Organization_OrganizationView"
+    Service_OrganizationView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+    AccessibilityForDisabilities_LocationView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        accessibility:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        location:
+          "$ref": "#/components/schemas/Location_LocationView"
+    HolidaySchedule_LocationView:
+      required:
+      - closed
+      - end_date
+      - id
+      - start_date
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        closed:
+          type: boolean
+        opens_at:
+          type: string
+          format: date-time
+        closes_at:
+          type: string
+          format: date-time
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        service:
+          "$ref": "#/components/schemas/Service_LocationView"
+        service_at_location:
+          "$ref": "#/components/schemas/ServiceAtLocation_LocationView"
+    Location_LocationView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        physical_addresses:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PhysicalAddress_LocationView"
+        service_at_locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceAtLocation_LocationView"
+        accessibility_for_disabilities:
+          type: array
+          items:
+            "$ref": "#/components/schemas/AccessibilityForDisabilities_LocationView"
+    PhysicalAddress_LocationView:
+      required:
+      - address_1
+      - city
+      - country
+      - id
+      - postal_code
+      - state_province
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        city:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        country:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        address_1:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        state_province:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        postal_code:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        location:
+          "$ref": "#/components/schemas/Location_LocationView"
+    RegularSchedule_LocationView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        dtstart:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        freq:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        interval:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        byday:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        bymonthday:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        opens_at:
+          type: string
+          format: date-time
+        closes_at:
+          type: string
+          format: date-time
+        valid_from:
+          type: string
+          format: date-time
+        valid_to:
+          type: string
+          format: date-time
+        service:
+          "$ref": "#/components/schemas/Service_LocationView"
+        service_at_location:
+          "$ref": "#/components/schemas/ServiceAtLocation_LocationView"
+    ServiceAtLocation_LocationView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        holidayScheduleCollection:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HolidaySchedule_LocationView"
+        regular_schedule:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RegularSchedule_LocationView"
+        service:
+          "$ref": "#/components/schemas/Service_LocationView"
+    Service_LocationView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+    ValidationResult_ServiceView:
+      type: object
+      properties:
+        message:
+          type: string
+    RatedItem_BasicView:
+      type: object
+      properties:
+        name:
+          type: string
+        percentage:
+          type: number
+          format: double
+    Rating_BasicView:
+      type: object
+      properties:
+        populated:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RatedItem_BasicView"
+        not_populated:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RatedItem_BasicView"
+        richness_percentage:
+          type: number
+          format: double
+    PageTaxonomy_BasicView:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        sort:
+          "$ref": "#/components/schemas/SortObject_BasicView"
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Taxonomy_BasicView"
+        numberOfElements:
+          type: integer
+          format: int32
+        last:
+          type: boolean
+        pageable:
+          "$ref": "#/components/schemas/PageableObject_BasicView"
+        first:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject_BasicView:
+      type: object
+      properties:
+        sort:
+          "$ref": "#/components/schemas/SortObject_BasicView"
+        offset:
+          type: integer
+          format: int64
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+    SortObject_BasicView:
+      type: object
+      properties:
+        unsorted:
+          type: boolean
+        sorted:
+          type: boolean
+        empty:
+          type: boolean
+    ValidationResult_BasicView:
+      type: object
+      properties:
+        message:
+          type: string
+    RatingSummary_BasicView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        percentage:
+          type: number
+          format: double
+    Ratings_BasicView:
+      type: object
+      properties:
+        ratings:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RatingSummary_BasicView"
+        sample_size:
+          type: integer
+          format: int32
+        richness_percentage:
+          type: number
+          format: double
+    Organization_ServiceBasicView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    PageService_ServiceBasicView:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        sort:
+          "$ref": "#/components/schemas/SortObject_ServiceBasicView"
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Service_ServiceBasicView"
+        numberOfElements:
+          type: integer
+          format: int32
+        last:
+          type: boolean
+        pageable:
+          "$ref": "#/components/schemas/PageableObject_ServiceBasicView"
+        first:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject_ServiceBasicView:
+      type: object
+      properties:
+        sort:
+          "$ref": "#/components/schemas/SortObject_ServiceBasicView"
+        offset:
+          type: integer
+          format: int64
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+    Service_ServiceBasicView:
+      required:
+      - id
+      - name
+      - status
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        email:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        status:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        fees:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        accreditations:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        deliverable_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_type:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        attending_access:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        assured_date:
+          type: string
+          format: date-time
+        organization:
+          "$ref": "#/components/schemas/Organization_ServiceBasicView"
+    SortObject_ServiceBasicView:
+      type: object
+      properties:
+        unsorted:
+          type: boolean
+        sorted:
+          type: boolean
+        empty:
+          type: boolean
+    Organization_ReviewBasicView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    Review_ReviewBasicView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        title:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date-time
+        score:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        widget:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        organization:
+          "$ref": "#/components/schemas/Organization_ReviewBasicView"
+    Organization_BasicView:
+      required:
+      - description
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        url:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        logo:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        uri:
+          maxLength: 65535
+          minLength: 0
+          type: string
+    Location_BasicView:
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        name:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        description:
+          maxLength: 65535
+          minLength: 0
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        physical_addresses:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PhysicalAddress_BasicView"
+    PhysicalAddress_BasicView:
+      required:
+      - address_1
+      - city
+      - country
+      - id
+      - postal_code
+      - state_province
+      type: object
+      properties:
+        id:
+          maxLength: 1536
+          minLength: 1
+          type: string
+        city:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        country:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        address_1:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        state_province:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        postal_code:
+          maxLength: 65535
+          minLength: 1
+          type: string
+        location:
+          "$ref": "#/components/schemas/Location_BasicView"
