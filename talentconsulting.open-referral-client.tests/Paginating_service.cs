@@ -30,6 +30,7 @@ namespace talentconsulting.open_referral_client.tests
 
             Assert.That(serviceResponse.First, Is.True);
             Assert.That(serviceResponse.Last, Is.False);
+            Assert.That(serviceResponse.Number, Is.EqualTo(1));
 
             Assert.That(serviceResponse.TotalElements, Is.EqualTo(5857));
             Assert.That(serviceResponse.TotalPages, Is.EqualTo(118));
@@ -48,6 +49,7 @@ namespace talentconsulting.open_referral_client.tests
 
             Assert.That(serviceResponse.First, Is.False);
             Assert.That(serviceResponse.Last, Is.False);
+            Assert.That(serviceResponse.Number, Is.EqualTo(2));
         }
     }
 }
