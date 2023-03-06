@@ -22,15 +22,11 @@
     <ProjectReference Include="..\talentconsulting.open-referral-client\talentconsulting.open-referral-client.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Newtonsoft.Json" />
-    <None Remove="canned-responses\" />
-    <None Remove="canned-responses\orgnisations.json" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="canned-responses\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="canned-responses\organisations.json" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="canned-responses\organisations.json" />
+    <None Update="canned-responses\services_page_1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="canned-responses\services_page_2.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

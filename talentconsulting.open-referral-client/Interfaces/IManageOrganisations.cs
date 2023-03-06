@@ -7,7 +7,7 @@ namespace talentconsulting.open_referral_client.Interfaces
 {
 	public interface IManageOrganisations
 	{
-        Task<List<Organisation>> GetOrganisations();
+        Task<List<Organisation>> GetOrganisations<T>(T args);
     }
 }
 

@@ -5,9 +5,9 @@ using talentconsulting.open_referral_client.Models;
 
 namespace talentconsulting.open_referral_client.Interfaces
 {
-	public interface IOpenReferralClient : IManageOrganisations, IManageServices
+	public interface IManageServices
 	{
-       
+        Task<ServiceResponse> GetServices<T>(T args);
     }
 }
 
