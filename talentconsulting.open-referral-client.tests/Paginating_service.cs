@@ -36,5 +36,18 @@ namespace talentconsulting.open_referral_client.tests
 
             Assert.That(serviceResponse.Size, Is.EqualTo(50));
         }
+
+        [Test]
+        public void Fetches_second_page_of_service()
+        {
+            var serviceResponse = _client.GetServices(
+                new
+                {
+                    page = "2"
+                }).Result;
+
+            Assert.That(serviceResponse.First, Is.False);
+            Assert.That(serviceResponse.Last, Is.False);
+        }
     }
 }

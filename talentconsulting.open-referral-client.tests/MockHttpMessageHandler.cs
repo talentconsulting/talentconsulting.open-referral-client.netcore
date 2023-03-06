@@ -1,5 +1,8 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Web;
 using File = System.IO.File;
 
 namespace talentconsulting.open_referral_client.tests
@@ -15,11 +18,23 @@ namespace talentconsulting.open_referral_client.tests
                 switch (request.RequestUri.LocalPath.Split("/").Last())
                 {
                     case "services":
+
+                        var page = HttpUtility.ParseQueryString(request.RequestUri.Query).Get("page");
+
                         var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
                         {
-                            RequestMessage = request,
-                            Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/services_page_1.json")).Result, Encoding.UTF8, "application/json")
+                            RequestMessage = request
                         };
+
+                        switch (page)
+                        {
+                            case "2":
+                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/services_page_2.json")).Result, Encoding.UTF8, "application/json");
+                                break;
+                            default:
+                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/services_page_1.json")).Result, Encoding.UTF8, "application/json");
+                                break;
+                        }
 
                         return await Task.FromResult(responseMessage);
                     case "organizations":
