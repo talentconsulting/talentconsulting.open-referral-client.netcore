@@ -16,6 +16,7 @@
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="108.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +26,9 @@
     <Folder Include="canned-responses\" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="canned-responses\organisations.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Remove="RestSharp.Serializers.NewtonsoftJson" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="canned-responses\services_page_1.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="canned-responses\services_page_2.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

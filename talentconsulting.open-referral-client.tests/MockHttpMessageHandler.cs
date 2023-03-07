@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Reflection.Metadata;
+﻿using System.Net;
 using System.Text;
 using System.Web;
 using File = System.IO.File;
@@ -29,20 +27,14 @@ namespace talentconsulting.open_referral_client.tests
                         switch (page)
                         {
                             case "2":
-                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/services_page_2.json")).Result, Encoding.UTF8, "application/json");
+                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                    "canned-responses/services_page_2.json").ReplaceLineEndings()).Result, Encoding.UTF8, "application/json");
                                 break;
                             default:
-                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/services_page_1.json")).Result, Encoding.UTF8, "application/json");
+                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                    "canned-responses/services_page_1.json").ReplaceLineEndings()).Result, Encoding.UTF8, "application/json");
                                 break;
                         }
-
-                        return await Task.FromResult(responseMessage);
-                    case "organizations":
-                        responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
-                        {
-                            RequestMessage = request,
-                            Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "canned-responses/organisations.json")).Result, Encoding.UTF8, "application/json")
-                        };
 
                         return await Task.FromResult(responseMessage);
                 }

@@ -2,7 +2,7 @@
   "number": 1,
   "size": 50,
   "totalPages": 118,
-  "totalElements": 5857,
+  "totalElements": 5875,
   "first": true,
   "last": false,
   "content": [
@@ -41,10 +41,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.738887,
-              51.863084
-            ]
+            "coordinates": [ -0.738887, 51.863084 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -269,10 +266,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.986144,
-              51.999948
-            ]
+            "coordinates": [ -0.986144, 51.999948 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -365,10 +359,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.816502,
-              51.813709
-            ]
+            "coordinates": [ -0.816502, 51.813709 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -442,10 +433,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.723373,
-              51.606862
-            ]
+            "coordinates": [ -0.723373, 51.606862 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -766,7 +754,7 @@
       "id": 5867,
       "updated_at": "2021-09-14T13:03:34.004Z",
       "name": "Village Lunch Club",
-      "description": "Village Lunch Club offering  a 2 course lunch on the 3rd Tuesday of each month",
+      "description": "Village Lunch Club offering a 2 course lunch on the 3rd Tuesday of each month",
       "url": "https://www.lifeinseergreen.org/",
       "min_age": 18,
       "max_age": null,
@@ -797,10 +785,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.608815,
-              51.617192
-            ]
+            "coordinates": [ -0.608815, 51.617192 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -904,10 +889,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.608858,
-              51.617573
-            ]
+            "coordinates": [ -0.608858, 51.617573 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -1001,10 +983,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.738887,
-              51.863084
-            ]
+            "coordinates": [ -0.738887, 51.863084 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -1109,10 +1088,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.775967,
-              51.705495
-            ]
+            "coordinates": [ -0.775967, 51.705495 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -1263,10 +1239,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.818094,
-              51.819303
-            ]
+            "coordinates": [ -0.818094, 51.819303 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -1379,7 +1352,7 @@
       "id": 9029,
       "updated_at": "2022-12-23T12:12:21.722Z",
       "name": "Money and Benefits Information Session (Various Locations)",
-      "description": "Money and Benefits Information session at various locations across Aylesbury and North Buckinghamshire.  A short presentation with information and signposting to local services followed by an opportunity to ask questions after. \r\n\r\nMeet staff from the Buckinghamshire Family Information Service who will help you find the best organisations to help resolve any financial concerns. We will also have a benefits expert available to help with any queries you may have.\r\n\r\nCurrent sessions available:\r\n\r\nFriday 27 January, 2pm to 3pm at Wing Family Centre\r\nMonday 13 February, 12 midday to 1pm at Steeple Claydon Family Centre \r\nThursday 9 March, 5:30pm to 6:30pm at Elmhurst Family Centre\r\nMonday 13 March,12 midday to 1pm at Berryfields Family Centre",
+      "description": "Money and Benefits Information session at various locations across Aylesbury and North Buckinghamshire. A short presentation with information and signposting to local services followed by an opportunity to ask questions after. \r\n\r\nMeet staff from the Buckinghamshire Family Information Service who will help you find the best organisations to help resolve any financial concerns. We will also have a benefits expert available to help with any queries you may have.\r\n\r\nCurrent sessions available:\r\n\r\nFriday 27 January, 2pm to 3pm at Wing Family Centre\r\nMonday 13 February, 12 midday to 1pm at Steeple Claydon Family Centre \r\nThursday 9 March, 5:30pm to 6:30pm at Elmhurst Family Centre\r\nMonday 13 March,12 midday to 1pm at Berryfields Family Centre",
       "url": "https://familyinfo.buckinghamshire.gov.uk/familycentres/buckingham-family-centre/",
       "min_age": null,
       "max_age": null,
@@ -1410,10 +1383,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.982508,
-              51.93789
-            ]
+            "coordinates": [ -0.982508, 51.93789 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -1428,10 +1398,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.811989,
-              51.823925
-            ]
+            "coordinates": [ -0.811989, 51.823925 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -1451,10 +1418,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.858495,
-              51.834746
-            ]
+            "coordinates": [ -0.858495, 51.834746 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -1469,10 +1433,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              0,
-              0
-            ]
+            "coordinates": [ 0, 0 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -1640,10 +1601,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.606607,
-              51.868497
-            ]
+            "coordinates": [ -0.606607, 51.868497 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -1739,10 +1697,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.791373,
-              51.822961
-            ]
+            "coordinates": [ -0.791373, 51.822961 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -1899,10 +1854,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.779071,
-              51.577853
-            ]
+            "coordinates": [ -0.779071, 51.577853 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -2096,7 +2048,7 @@
       "send_needs": [],
       "suitabilities": [],
       "local_offer": {
-        "description": "At Sandygate Pre-School our care for children with special needs focuses on how we can meet those needs and help their ongoing development.  To this end, we work with parents and relevant professionals to adjust our practice to support the child and include them in the life of the setting.\r\nSpecial needs may become apparent during a child's time in our care, and we will discuss this confidentially with parents to agree on the steps to take.\r\nPlease call us to discuss how we can help.",
+        "description": "At Sandygate Pre-School our care for children with special needs focuses on how we can meet those needs and help their ongoing development. To this end, we work with parents and relevant professionals to adjust our practice to support the child and include them in the life of the setting.\r\nSpecial needs may become apparent during a child's time in our care, and we will discuss this confidentially with parents to agree on the steps to take.\r\nPlease call us to discuss how we can help.",
         "link": "",
         "survey_answers": [
           {
@@ -2166,10 +2118,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.743951,
-              51.764585
-            ]
+            "coordinates": [ -0.743951, 51.764585 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -2324,10 +2273,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.639293,
-              51.827802
-            ]
+            "coordinates": [ -0.639293, 51.827802 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -2462,10 +2408,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.956385,
-              51.968933
-            ]
+            "coordinates": [ -0.956385, 51.968933 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -2494,7 +2437,7 @@
         },
         {
           "id": 9737,
-          "name": "John Osborn  ",
+          "name": "John Osborn ",
           "title": "",
           "email": "j.osborn019@outlook.com",
           "phone": "01280 817019"
@@ -2629,10 +2572,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.496275,
-              51.572179
-            ]
+            "coordinates": [ -0.496275, 51.572179 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -2712,10 +2652,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.507047,
-              51.502352
-            ]
+            "coordinates": [ -0.507047, 51.502352 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -2782,10 +2719,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.814775,
-              51.815856
-            ]
+            "coordinates": [ -0.814775, 51.815856 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -2859,10 +2793,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.660027,
-              51.849326
-            ]
+            "coordinates": [ -0.660027, 51.849326 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -2943,10 +2874,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.81675,
-              51.803714
-            ]
+            "coordinates": [ -0.81675, 51.803714 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -3002,7 +2930,7 @@
       "id": 9320,
       "updated_at": "2022-11-14T14:54:11.003Z",
       "name": "Seniors Badminton and Short Tennis",
-      "description": "Badminton and Short Tennis for over 50's. Monday, Thursday and Friday 1pm to 4pm.\r\nNo annual fee.\r\n\r\nFriendly, sociable, club for those with some playing skill who would like to keep fit.   ",
+      "description": "Badminton and Short Tennis for over 50's. Monday, Thursday and Friday 1pm to 4pm.\r\nNo annual fee.\r\n\r\nFriendly, sociable, club for those with some playing skill who would like to keep fit. ",
       "url": "http://www.overfiftybadminton.co.uk",
       "min_age": 50,
       "max_age": null,
@@ -3033,10 +2961,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.83107,
-              51.828649
-            ]
+            "coordinates": [ -0.83107, 51.828649 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -3239,10 +3164,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.14189,
-              51.501364
-            ]
+            "coordinates": [ -0.14189, 51.501364 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -3322,7 +3244,7 @@
       "id": 4637,
       "updated_at": "2021-09-14T13:00:00.588Z",
       "name": "St Bernadines Catholic Church",
-      "description": "St. Bernardines is in the joint Parish of Buckingham and Brackley. The Church is open for worship, but following  government guidelines with regard to COVID19. Please see website for more details and to book a space for mass.",
+      "description": "St. Bernardines is in the joint Parish of Buckingham and Brackley. The Church is open for worship, but following government guidelines with regard to COVID19. Please see website for more details and to book a space for mass.",
       "url": "https://stbernardines.org/",
       "min_age": null,
       "max_age": null,
@@ -3353,10 +3275,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.989089,
-              51.994211
-            ]
+            "coordinates": [ -0.989089, 51.994211 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -3445,10 +3364,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.636436,
-              51.600237
-            ]
+            "coordinates": [ -0.636436, 51.600237 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -3602,10 +3518,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.979487,
-              51.936164
-            ]
+            "coordinates": [ -0.979487, 51.936164 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -3729,10 +3642,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -1.017913,
-              52.03135
-            ]
+            "coordinates": [ -1.017913, 52.03135 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -3812,10 +3722,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.791373,
-              51.822961
-            ]
+            "coordinates": [ -0.791373, 51.822961 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -3961,10 +3868,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.97911,
-              51.935769
-            ]
+            "coordinates": [ -0.97911, 51.935769 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -4050,10 +3954,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.829545,
-              51.936162
-            ]
+            "coordinates": [ -0.829545, 51.936162 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -4189,10 +4090,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.55187,
-              51.582921
-            ]
+            "coordinates": [ -0.55187, 51.582921 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -4256,7 +4154,7 @@
       "organisation": {
         "id": 951,
         "name": "Simply Walk",
-        "description": "Walking is a fantastic way to get out and about, meet new people, improve your health and well being and help the environment.\nSimply Walk has over 50 organised walks throughout Buckinghamshire that are led by trained volunteers.  This is a great way to explore the county.\nAll new walkers are welcome to the scheme whether you are currently fit and active, or haven’t exercised in a long time. There are also specific walks for ladies to help them stay healthy during pregnancy.\nIt couldn’t be easier to get started. No need to book, just choose your walk and, on your first walk arrive 15 minutes early to register with the walk leader.\n ",
+        "description": "Walking is a fantastic way to get out and about, meet new people, improve your health and well being and help the environment.\nSimply Walk has over 50 organised walks throughout Buckinghamshire that are led by trained volunteers. This is a great way to explore the county.\nAll new walkers are welcome to the scheme whether you are currently fit and active, or haven’t exercised in a long time. There are also specific walks for ladies to help them stay healthy during pregnancy.\nIt couldn’t be easier to get started. No need to book, just choose your walk and, on your first walk arrive 15 minutes early to register with the walk leader.\n ",
         "email": "simplywalks@buckinghamshire.gov.uk",
         "url": "https://www.buckscc.gov.uk/services/environment/exploring-the-countryside/simply-walk/"
       },
@@ -4293,7 +4191,7 @@
       "id": 5777,
       "updated_at": "2021-09-14T13:03:15.813Z",
       "name": "Dementia Support Group",
-      "description": "Whether caring for a loved one or if you have been affected by dementia please join us to share experiences, discuss issues surrounding dementia and simply be there for one another. We would love you to join us at Gracewell of Maids Moreton on the last Thursday of each month.  Please contact Andrea on 01280 818710 or MaidsMoreton.HAA@gracewell.co.uk for the most up-to-date information.",
+      "description": "Whether caring for a loved one or if you have been affected by dementia please join us to share experiences, discuss issues surrounding dementia and simply be there for one another. We would love you to join us at Gracewell of Maids Moreton on the last Thursday of each month. Please contact Andrea on 01280 818710 or MaidsMoreton.HAA@gracewell.co.uk for the most up-to-date information.",
       "url": "https://www.gracewell.co.uk/care-homes/gracewell-of-maids-moreton",
       "min_age": 18,
       "max_age": null,
@@ -4324,10 +4222,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.973356,
-              52.011366
-            ]
+            "coordinates": [ -0.973356, 52.011366 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -4387,7 +4282,7 @@
       "id": 6702,
       "updated_at": "2021-09-14T13:06:12.453Z",
       "name": "All Together Community",
-      "description": "Set up for local people providing a range of services that including groups, support and training.  They endeavour to give opportunities to everyone that will help them to meet others and learn new skills, reducing isolation, improving mental health and socialisation.  Come along to enjoy socialising again, meet new people, have friendly chats and enjoy tea and cake.  Transport can be provided",
+      "description": "Set up for local people providing a range of services that including groups, support and training. They endeavour to give opportunities to everyone that will help them to meet others and learn new skills, reducing isolation, improving mental health and socialisation. Come along to enjoy socialising again, meet new people, have friendly chats and enjoy tea and cake. Transport can be provided",
       "url": "https://www.alltogethercic.co.uk/",
       "min_age": null,
       "max_age": null,
@@ -4418,10 +4313,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.589886,
-              51.620688
-            ]
+            "coordinates": [ -0.589886, 51.620688 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -4507,10 +4399,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.751868,
-              51.630978
-            ]
+            "coordinates": [ -0.751868, 51.630978 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -4679,10 +4568,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.686004,
-              51.966425
-            ]
+            "coordinates": [ -0.686004, 51.966425 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -4804,10 +4690,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.837249,
-              51.938121
-            ]
+            "coordinates": [ -0.837249, 51.938121 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -4898,10 +4781,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.920946,
-              51.949965
-            ]
+            "coordinates": [ -0.920946, 51.949965 ]
           },
           "mask_exact_address": null,
           "accessibilities": [
@@ -4992,10 +4872,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -1.12726,
-              52.033683
-            ]
+            "coordinates": [ -1.12726, 52.033683 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -5123,10 +5000,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -1.094483,
-              52.018257
-            ]
+            "coordinates": [ -1.094483, 52.018257 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -5355,7 +5229,7 @@
       "id": 9306,
       "updated_at": "2022-11-10T12:03:21.360Z",
       "name": "Wycombe Leisure Centre (Handycross)",
-      "description": "We’re passionate about helping you stay physically active and emotionally engaged in fitness, sport and wellbeing.  Our mission is to put our heart and soul into ‘creating active places and healthy people’ - it’s about creating a place for everyone.\r\n\r\nSwimming, gym, soft play, fitness studio and much more. please visit our website.",
+      "description": "We’re passionate about helping you stay physically active and emotionally engaged in fitness, sport and wellbeing. Our mission is to put our heart and soul into ‘creating active places and healthy people’ - it’s about creating a place for everyone.\r\n\r\nSwimming, gym, soft play, fitness studio and much more. please visit our website.",
       "url": "https://www.placesleisure.org/centres/wycombe-leisure-centre/?utm_source=gmb&utm_medium=button",
       "min_age": null,
       "max_age": null,
@@ -5386,10 +5260,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.76266,
-              51.614035
-            ]
+            "coordinates": [ -0.76266, 51.614035 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -5453,7 +5324,7 @@
       "organisation": {
         "id": 1193,
         "name": "Wycombe Leisure Centre",
-        "description": "Sports and leisure centre providing facilities and activities for all ages and sectors of the community.  Facilities/activities include: swimming, health suite, aerobics, aqua zone swim lessons, trampoline and gymnastics courses, football, hockey, athletics, badminton, squash, basketball, roller disco, fencing, indoor bowls, creche, cafe, martial arts, sub aqua, WADSAD (for able and non able bodied persons).",
+        "description": "Sports and leisure centre providing facilities and activities for all ages and sectors of the community. Facilities/activities include: swimming, health suite, aerobics, aqua zone swim lessons, trampoline and gymnastics courses, football, hockey, athletics, badminton, squash, basketball, roller disco, fencing, indoor bowls, creche, cafe, martial arts, sub aqua, WADSAD (for able and non able bodied persons).",
         "email": "placesleisure@harlandsgroup.co.uk",
         "url": "https://www.placesleisure.org/centres/wycombe-leisure-centre/"
       },
@@ -5545,10 +5416,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.813318,
-              51.856417
-            ]
+            "coordinates": [ -0.813318, 51.856417 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -5678,10 +5546,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.825702,
-              51.999244
-            ]
+            "coordinates": [ -0.825702, 51.999244 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -5814,10 +5679,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.916102,
-              51.99629
-            ]
+            "coordinates": [ -0.916102, 51.99629 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -5960,10 +5822,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.882535,
-              51.945633
-            ]
+            "coordinates": [ -0.882535, 51.945633 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -6124,10 +5983,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.762687,
-              51.632188
-            ]
+            "coordinates": [ -0.762687, 51.632188 ]
           },
           "mask_exact_address": null,
           "accessibilities": []
@@ -6201,10 +6057,7 @@
           "country": null,
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.590374,
-              51.672483
-            ]
+            "coordinates": [ -0.590374, 51.672483 ]
           },
           "mask_exact_address": false,
           "accessibilities": [
@@ -6379,10 +6232,7 @@
           "country": "GB",
           "geometry": {
             "type": "Point",
-            "coordinates": [
-              -0.74325,
-              51.76215
-            ]
+            "coordinates": [ -0.74325, 51.76215 ]
           },
           "mask_exact_address": false,
           "accessibilities": []
@@ -6446,7 +6296,7 @@
       "organisation": {
         "id": 951,
         "name": "Simply Walk",
-        "description": "Walking is a fantastic way to get out and about, meet new people, improve your health and well being and help the environment.\nSimply Walk has over 50 organised walks throughout Buckinghamshire that are led by trained volunteers.  This is a great way to explore the county.\nAll new walkers are welcome to the scheme whether you are currently fit and active, or haven’t exercised in a long time. There are also specific walks for ladies to help them stay healthy during pregnancy.\nIt couldn’t be easier to get started. No need to book, just choose your walk and, on your first walk arrive 15 minutes early to register with the walk leader.\n ",
+        "description": "Walking is a fantastic way to get out and about, meet new people, improve your health and well being and help the environment.\nSimply Walk has over 50 organised walks throughout Buckinghamshire that are led by trained volunteers. This is a great way to explore the county.\nAll new walkers are welcome to the scheme whether you are currently fit and active, or haven’t exercised in a long time. There are also specific walks for ladies to help them stay healthy during pregnancy.\nIt couldn’t be easier to get started. No need to book, just choose your walk and, on your first walk arrive 15 minutes early to register with the walk leader.\n ",
         "email": "simplywalks@buckinghamshire.gov.uk",
         "url": "https://www.buckscc.gov.uk/services/environment/exploring-the-countryside/simply-walk/"
       },

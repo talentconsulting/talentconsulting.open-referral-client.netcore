@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace talentconsulting.open_referral_client.Models
 {
     public class BaseModel 
     {
         [JsonExtensionData]
-        public Dictionary<string, object> Data { get; set; }
+        public Dictionary<string, JToken> Data { get; set; }
     }
 }
 

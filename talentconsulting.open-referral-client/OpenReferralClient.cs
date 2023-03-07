@@ -4,11 +4,12 @@ using talentconsulting.open_referral_client.Interfaces;
 using RestSharp;
 using talentconsulting.open_referral_client.Models;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
+using RestSharp.Serializers.NewtonsoftJson;
+using Newtonsoft.Json.Serialization;
+using System.Runtime;
 
 namespace talentconsulting.open_referral_client
 {
@@ -20,11 +21,13 @@ namespace talentconsulting.open_referral_client
         public OpenReferralClient(Uri baseUri, string basePath) : this(basePath)
         {
             _client = new RestClient(baseUri);
+            _client.UseNewtonsoftJson();
         }
 
         public OpenReferralClient(Uri baseUri) : this("")
         {
             _client = new RestClient(baseUri);
+            _client.UseNewtonsoftJson();
         }
 
         public OpenReferralClient(RestClient client, string basePath) : this(basePath)
@@ -42,46 +45,16 @@ namespace talentconsulting.open_referral_client
             _basePath = basePath ?? "";
         }
 
-        /// <summary>
-        /// Supports 'taxonomy' and 'scheme'
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        public async Task<List<Organisation>> GetOrganisations<T>(T args)
+        public void SetSerializerOptions(JsonSerializerSettings settings)
         {
-            Dictionary<string, string> queryParamRequests;
-
-            var request = new RestRequest($"{_basePath}/organizations");
-
-            using (var stream = new MemoryStream())
-            {
-                await JsonSerializer.SerializeAsync(stream, args);
-                stream.Seek(0, SeekOrigin.Begin);
-                queryParamRequests = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(stream);
-            }
-
-            foreach (KeyValuePair<string, string> entry in queryParamRequests)
-            {
-                request.AddQueryParameter(entry.Key, entry.Value);
-            }
-
-            var result = await _client.GetAsync<List<Organisation>>(request);
-
-            return result;
+            _client.UseNewtonsoftJson(settings);
         }
 
         public async Task<ServiceResponse> GetServices<T>(T args)
         {
-            Dictionary<string, string> queryParamRequests;
-
             var request = new RestRequest($"{_basePath}/services");
 
-            using (var stream = new MemoryStream())
-            {
-                await JsonSerializer.SerializeAsync(stream, args);
-                stream.Seek(0, SeekOrigin.Begin);
-                queryParamRequests = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(stream);
-            }
+            var queryParamRequests = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(args));
 
             foreach (KeyValuePair<string, string> entry in queryParamRequests)
             {

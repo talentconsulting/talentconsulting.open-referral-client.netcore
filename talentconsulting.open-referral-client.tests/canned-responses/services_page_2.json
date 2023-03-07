@@ -2,7 +2,7 @@
   "number": 2,
   "size": 50,
   "totalPages": 118,
-  "totalElements": 5857,
+  "totalElements": 5889,
   "first": false,
   "last": false,
   "content": [
@@ -5750,6 +5750,166 @@
       "distance_away": null
     },
     {
+      "id": 9262,
+      "updated_at": "2023-03-07T15:27:44.851Z",
+      "name": "Easter Egg-Stravaganza Special Event (Saturday 8 April)",
+      "description": " A day full of family fun with lots to do including:\r\n\r\n1:30pm – A special show from the Magical Story Elves – Blossom the Easter fairy is in fairy training and accidentally loses all of the Easter Eggs while practising her magic. The eggs have been scattered around to a variety of different dimensions including the hometown of a famous spider superhero and well-known princess. Can you help The Easter Fairy solve the clues and hunt for the lost eggs before the Easter Bunny returns to find them missing.\r\n\r\nTake part in the 40 min interactive show including dancing, bubble catching, magic, party dances and much more. Followed by meet and greet with the characters, photo opportunities and a balloon model for each child.\r\n\r\nEaster bonnet making drop-in workshops\r\n\r\nEaster bonnet parade around the garden with prizes for the most creative.\r\n\r\nBring a picnic and rug to enjoy in our beautiful Victorian walled garden or purchase refreshments from the cafe. We recommend you arrive promptly to ensure you don’t miss any of the activities.\r\n\r\n Cost: £8.50 per child for the day (designed for children up to 10 years of age but all welcome. Under 3s and accompanying adults free)",
+      "url": "https://www.discoverbucksmuseum.org/whats-on/february-half-term/",
+      "min_age": 0,
+      "max_age": 10,
+      "age_band_under_2": null,
+      "age_band_2": null,
+      "age_band_3_4": null,
+      "age_band_5_7": null,
+      "age_band_8_plus": null,
+      "age_band_all": null,
+      "needs_referral": null,
+      "free": null,
+      "created_at": "2022-11-07T12:56:23.116Z",
+      "status": "active",
+      "target_directories": [
+        {
+          "name": "Family Information Service",
+          "label": "bfis"
+        }
+      ],
+      "locations": [
+        {
+          "id": 10209,
+          "name": "Discover Bucks",
+          "address_1": "Church Street",
+          "city": "Aylesbury",
+          "state_province": null,
+          "postal_code": "HP20 2QP",
+          "country": null,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -0.814726,
+              51.817147
+            ]
+          },
+          "mask_exact_address": false,
+          "accessibilities": []
+        }
+      ],
+      "contacts": [
+        {
+          "id": 13028,
+          "name": "",
+          "title": "",
+          "email": "hello@discoverbucksmuseum.org",
+          "phone": "01296 331441"
+        }
+      ],
+      "meta": [
+        {
+          "key": "Maximum number of children a day?",
+          "value": ""
+        },
+        {
+          "key": "How many weeks in a calendar year are you open?",
+          "value": ""
+        },
+        {
+          "key": "Vacancies for under 5 year olds",
+          "value": ""
+        },
+        {
+          "key": "Vacancies for 5 to 8 year olds",
+          "value": ""
+        },
+        {
+          "key": "Vacancies for over 8 year olds",
+          "value": ""
+        },
+        {
+          "key": "Do you provide a pick-up/drop-off service?",
+          "value": "No"
+        },
+        {
+          "key": "Where is your pick-up/drop-off service from/to?",
+          "value": ""
+        },
+        {
+          "key": "Childcare vacancies currently",
+          "value": "No"
+        },
+        {
+          "key": "Communication Email address",
+          "value": ""
+        },
+        {
+          "key": "Contact Name",
+          "value": ""
+        },
+        {
+          "key": "Contact Phone number ",
+          "value": ""
+        }
+      ],
+      "organisation": {
+        "id": 199,
+        "name": "Discover Bucks Museum and Roald Dahl Children's Gallery",
+        "description": "The County Museum, in the historic heart of Aylesbury, is a fascinating place to visit with an exciting programme of exhibitions and events for all ages.In the galleries explore displays on mammoths, Romans, and Victorians and discover our rich heritage of geology, art, and archaeology.\nVisit the fabulous Roald Dahl Children’s Gallery for hands-on fun where you can crawl along Fantastic Mr. Fox’s tunnel, go inside the Giant Peach and let your imagination run wild.",
+        "email": "museum@buckscountymuseum.org",
+        "url": "https://www.buckscountymuseum.org/museum/"
+      },
+      "taxonomies": [
+        {
+          "id": 3,
+          "name": "Things to do",
+          "slug": "things-to-do",
+          "parent_id": null
+        },
+        {
+          "id": 265,
+          "name": "Holiday activities",
+          "slug": "holiday-activities",
+          "parent_id": 3
+        },
+        {
+          "id": 272,
+          "name": "Local attractions",
+          "slug": "local-attractions",
+          "parent_id": 3
+        },
+        {
+          "id": 365,
+          "name": "Museums and history",
+          "slug": "museums-and-history",
+          "parent_id": 272
+        },
+        {
+          "id": 419,
+          "name": "Upcoming events",
+          "slug": "upcoming-events",
+          "parent_id": 3
+        }
+      ],
+      "regular_schedules": [
+        {
+          "id": 14920,
+          "weekday": "Saturday",
+          "opens_at": "13:30",
+          "closes_at": "16:00"
+        }
+      ],
+      "cost_options": [
+        {
+          "id": 4194,
+          "option": "Per Child",
+          "amount": "8.50",
+          "cost_type": ""
+        }
+      ],
+      "links": [],
+      "send_needs": [],
+      "suitabilities": [],
+      "local_offer": null,
+      "distance_away": null
+    },
+    {
       "id": 9263,
       "updated_at": "2023-03-01T11:28:16.970Z",
       "name": "Mothers Day Concertini with Rogue Opera",
@@ -7520,117 +7680,6 @@
       ],
       "send_needs": [],
       "suitabilities": [],
-      "local_offer": null,
-      "distance_away": null
-    },
-    {
-      "id": 5261,
-      "updated_at": "2021-09-14T13:01:53.356Z",
-      "name": "Tamil Kalvi Koodam",
-      "description": "Cultural activities and courses for the Tamil community. Please contact for further details.",
-      "url": "http://buckstamilkalvikoodam.com/",
-      "min_age": 18,
-      "max_age": null,
-      "age_band_under_2": null,
-      "age_band_2": null,
-      "age_band_3_4": null,
-      "age_band_5_7": null,
-      "age_band_8_plus": null,
-      "age_band_all": null,
-      "needs_referral": null,
-      "free": null,
-      "created_at": "2021-09-14T13:01:53.356Z",
-      "status": "active",
-      "target_directories": [
-        {
-          "name": "Buckinghamshire Online Directory",
-          "label": "bod"
-        }
-      ],
-      "locations": [
-        {
-          "id": 6174,
-          "name": null,
-          "address_1": "Bucks New University, Queen Alexandra Road, High Wycombe",
-          "city": "High Wycombe",
-          "state_province": "Buckinghamshire",
-          "postal_code": "HP11 2JZ",
-          "country": "GB",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [
-              -0.753404,
-              51.627916
-            ]
-          },
-          "mask_exact_address": null,
-          "accessibilities": [
-            {
-              "name": "Accessible toilet facilities",
-              "slug": "accessible-toilet-facilities"
-            },
-            {
-              "name": "Wheelchair accessible entrance",
-              "slug": "wheelchair-accessible-entrance"
-            },
-            {
-              "name": "Car parking",
-              "slug": "car-parking"
-            },
-            {
-              "name": "Bus stop nearby",
-              "slug": "bus-stop-nearby"
-            },
-            {
-              "name": "Building has lift",
-              "slug": "building-has-lift"
-            }
-          ]
-        }
-      ],
-      "contacts": [
-        {
-          "id": 8769,
-          "name": null,
-          "title": null,
-          "email": "stsiven@aol.com",
-          "phone": "07400 558058"
-        }
-      ],
-      "meta": [],
-      "organisation": {
-        "id": 3834,
-        "name": "Tamil Kalvi Koodam - Wycombe",
-        "description": null,
-        "email": null,
-        "url": null
-      },
-      "taxonomies": [
-        {
-          "id": 3,
-          "name": "Things to do",
-          "slug": "things-to-do",
-          "parent_id": null
-        }
-      ],
-      "regular_schedules": [
-        {
-          "id": 7558,
-          "weekday": "Sunday",
-          "opens_at": "13:00",
-          "closes_at": "17:00"
-        }
-      ],
-      "cost_options": [],
-      "links": [],
-      "send_needs": [],
-      "suitabilities": [
-        {
-          "id": 2,
-          "name": "Older people",
-          "slug": "older-people"
-        }
-      ],
       "local_offer": null,
       "distance_away": null
     }

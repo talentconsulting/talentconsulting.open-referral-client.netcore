@@ -3,22 +3,25 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using static System.Net.WebRequestMethods;
 using static talentconsulting.open_referral_client.tests.Serialises_extra_properties;
 using File = System.IO.File;
 
 namespace talentconsulting.open_referral_client.tests
 {
-    public class Paginating_service
+    public class Paginating__of_services
     {
         private OpenReferralClient _client;
 
-        public Paginating_service()
+        public Paginating__of_services()
         {
             var restClient = new RestClient(new HttpClient(new MockHttpMessageHandler())
             {
-                BaseAddress = new Uri("https://mocked-api-for-open-referral.openreferral.org")
+                BaseAddress = new Uri("https://mocked-api-for-open-referral.openreferral.org"),
             });
+
+            restClient.UseNewtonsoftJson();
 
             _client = new OpenReferralClient(restClient);
         }

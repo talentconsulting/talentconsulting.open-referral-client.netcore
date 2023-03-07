@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using talentconsulting.open_referral_client.Interfaces;
+using Newtonsoft.Json;
 
 namespace talentconsulting.open_referral_client.Models
 {
     public class ServiceResponse: Pagination
     {
-        public List<Service> Content { get; set; }
+        [JsonProperty(PropertyName = "content")]
+        public IList<Service> Services { get; set; }
     }
 }
 
