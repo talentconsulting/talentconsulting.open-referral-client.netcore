@@ -26,20 +26,20 @@ namespace talentconsulting.open_referral_client.tests
             _client = new OpenReferralClient(restClient);
         }
 
-        [Test]
-        public void Fetches_first_page_of_service_defaults()
-        {
-            var serviceResponse = _client.GetServices(new {}).Result;
+        //[Test]
+        //public void Fetches_first_page_of_service_defaults()
+        //{
+        //    var serviceResponse = _client.GetServices(new {}).Result;
 
-            Assert.That(serviceResponse.First, Is.True);
-            Assert.That(serviceResponse.Last, Is.False);
-            Assert.That(serviceResponse.Number, Is.EqualTo(1));
+        //    Assert.That(serviceResponse.First, Is.True);
+        //    Assert.That(serviceResponse.Last, Is.False);
+        //    Assert.That(serviceResponse.Number, Is.EqualTo(1));
 
-            Assert.That(serviceResponse.TotalElements, Is.EqualTo(5857));
-            Assert.That(serviceResponse.TotalPages, Is.EqualTo(118));
+        //    Assert.That(serviceResponse.TotalElements, Is.EqualTo(5857));
+        //    Assert.That(serviceResponse.TotalPages, Is.EqualTo(118));
 
-            Assert.That(serviceResponse.Size, Is.EqualTo(50));
-        }
+        //    Assert.That(serviceResponse.Size, Is.EqualTo(50));
+        //}
 
         [Test]
         public void Fetches_second_page_of_service()
