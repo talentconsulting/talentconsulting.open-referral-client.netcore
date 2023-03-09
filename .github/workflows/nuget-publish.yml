@@ -24,7 +24,12 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
           
-      - name: Build solution and generate NuGet package
+      - name: Build the client
+        run: |
+          cd talentconsulting.open-referral-client
+          dotnet build --configuration Release
+
+      - name: Generate NuGet package
         run: |  
           cd talentconsulting.open-referral-client
           dotnet pack -c Release -o out  
