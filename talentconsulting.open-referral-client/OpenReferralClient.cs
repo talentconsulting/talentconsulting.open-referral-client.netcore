@@ -15,8 +15,8 @@ namespace talentconsulting.open_referral_client
 {
 	public class OpenReferralClient : IOpenReferralClient
 	{
-        private RestClient _client;
-        private string _basePath;
+        private readonly RestClient _client;
+        private readonly string _basePath;
 
         public OpenReferralClient(Uri baseUri, string basePath) : this(basePath)
         {
