@@ -10,9 +10,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4883DB9B-7136-4AE2-AD3E-8D2BCC255403}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "talentconsulting.open-referral.pull-script", "talentconsulting.open-referral.pull-script\talentconsulting.open-referral.pull-script.csproj", "{671BE089-0E2C-48A0-BCBC-EC9D4CE05CE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflows", "github-workflows", "{4D65FEC9-CDB7-4BDB-B959-295489768BBD}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\nuget-publish.yml = .github\workflows\nuget-publish.yml
+		.github\workflows\build and test.yml = .github\workflows\build and test.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,5 +45,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8F007F0C-2700-4B4E-847B-3CC09417E924}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D65FEC9-CDB7-4BDB-B959-295489768BBD} = {4883DB9B-7136-4AE2-AD3E-8D2BCC255403}
 	EndGlobalSection
 EndGlobal
