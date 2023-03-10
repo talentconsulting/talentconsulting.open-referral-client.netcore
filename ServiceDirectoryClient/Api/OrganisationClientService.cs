@@ -20,6 +20,7 @@ public interface IOrganisationClientService
     Task<string> UpdateService(ServiceDto service);
 }
 
+
 public class OrganisationClientService : ApiService, IOrganisationClientService
 {
     public OrganisationClientService(HttpClient client)

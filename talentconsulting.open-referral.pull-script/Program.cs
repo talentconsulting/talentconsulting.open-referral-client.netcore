@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceDirectoryClient.Api;
-using talentconsulting.open_referral_client;
 using Talentconsulting.OpenReferral.PullScript.OrganisationMappers;
 
 namespace Talentconsulting.OpenReferral.PullScript;
@@ -37,17 +36,7 @@ class Program
 
         logger.LogDebug("Starting application");
 
-        var client = new OpenReferralClient(new Uri("https://api.familyinfo.buckinghamshire.gov.uk"), "api/v1");
-
-        var services = await client.GetServices(new
-        {
-
-        });
-
-        BuckinghamshireMapper BuckinghamshireMapper = new BuckinghamshireMapper(serviceProvider.GetRequiredService<ILocalOfferClientService>(), serviceProvider.GetRequiredService <IOrganisationClientService>());
-        await BuckinghamshireMapper.AddAndUpdateServices(services);
-
-
-
+        BuckinghamshireMapper BuckinghamshireMapper = new BuckinghamshireMapper(serviceProvider.GetRequiredService <IOrganisationClientService>());
+        await BuckinghamshireMapper.AddOrUpdateServices("https://api.familyinfo.buckinghamshire.gov.uk", "api/v1");
     }
 }

@@ -1,30 +1,37 @@
 ﻿using FamilyHubs.ServiceDirectory.Shared.Builders;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using IdGen;
 using Newtonsoft.Json.Linq;
-using Pipelines.Sockets.Unofficial.Arenas;
 using ServiceDirectoryClient.Api;
-using System;
-using System.Xml.Linq;
+using talentconsulting.open_referral_client;
 using talentconsulting.open_referral_client.Models;
 
 namespace Talentconsulting.OpenReferral.PullScript.OrganisationMappers;
 
 public class BuckinghamshireMapper
 {
-    private readonly ILocalOfferClientService _localOfferClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly Dictionary<string, OrganisationDto> _dictOrganisations = new Dictionary<string, OrganisationDto>();
 
-    public BuckinghamshireMapper(ILocalOfferClientService localOfferClientService, IOrganisationClientService organisationClientService)
+    public BuckinghamshireMapper(IOrganisationClientService organisationClientService)
     {
-        _localOfferClientService = localOfferClientService;
         _organisationClientService = organisationClientService;
     }
 
+    public async Task AddOrUpdateServices(string baseurl, string basepath)
+    {
+        var client = new OpenReferralClient(new Uri(baseurl), basepath);
 
-    public async Task AddAndUpdateServices(ServiceResponse serviceResponse)
+        var services = await client.GetServices(new
+        {
+
+        });
+
+        await AddAndUpdateServices(services);
+
+    }
+
+    private async Task AddAndUpdateServices(ServiceResponse serviceResponse)
     {
         await CreateOrganisationDictionary();
 
@@ -91,7 +98,7 @@ public class BuckinghamshireMapper
                 services: new List<ServiceDto>() { newService },
                 linkContacts: new List<LinkContactDto>());
 
-                await _organisationClientService.CreateOrganisation(organisationWithServicesDto);
+                //await _organisationClientService.CreateOrganisation(organisationWithServicesDto);
             }
             else
             {
@@ -103,7 +110,7 @@ public class BuckinghamshireMapper
                     
                 organisationWithServicesDto.Services.Add(newService);
 
-                await _organisationClientService.UpdateOrganisation(organisationWithServicesDto);
+                //await _organisationClientService.UpdateOrganisation(organisationWithServicesDto);
             }
         }
     }
