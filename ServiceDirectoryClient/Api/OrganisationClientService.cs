@@ -1,8 +1,10 @@
 ﻿using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel;
+using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ServiceDirectoryClient.Api;
 
@@ -14,6 +16,8 @@ public interface IOrganisationClientService
     Task<OrganisationWithServicesDto> GetOrganisationById(string id);
     Task<string> CreateOrganisation(OrganisationWithServicesDto organisation);
     Task<string> UpdateOrganisation(OrganisationWithServicesDto organisation);
+    Task<string> CreateService(ServiceDto service);
+    Task<string> UpdateService(ServiceDto service);
 }
 
 public class OrganisationClientService : ApiService, IOrganisationClientService
@@ -127,6 +131,40 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
             Method = HttpMethod.Put,
             RequestUri = new Uri(_client.BaseAddress + $"api/organizations/{organisation.Id}"),
             Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(organisation), Encoding.UTF8, "application/json"),
+        };
+
+        using var response = await _client.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+
+        var stringResult = await response.Content.ReadAsStringAsync();
+        return stringResult;
+    }
+
+    public async Task<string> CreateService(ServiceDto service)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri(_client.BaseAddress + "api/services"),
+            Content = new StringContent(JsonConvert.SerializeObject(service), Encoding.UTF8, "application/json"),
+        };
+
+        using var response = await _client.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+
+        var stringResult = await response.Content.ReadAsStringAsync();
+        return stringResult;
+    }
+
+    public async Task<string> UpdateService(ServiceDto service)
+    {
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Put,
+            RequestUri = new Uri(_client.BaseAddress + $"api/services/{service.Id}"),
+            Content = new StringContent(JsonConvert.SerializeObject(service), Encoding.UTF8, "application/json"),
         };
 
         using var response = await _client.SendAsync(request);
