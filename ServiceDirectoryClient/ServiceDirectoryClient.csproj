@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="RestSharp" Version="108.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="RestSharp" Version="108.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="108.0.3" />
+		<PackageReference Include="FamilyHubs.ServiceDirectory.Shared" Version="1.1.28" />
+		<PackageReference Include="FamilyHubs.SharedKernel" Version="1.0.8" />
+	</ItemGroup>
+
+</Project>

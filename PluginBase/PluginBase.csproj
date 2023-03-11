@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FamilyHubs.ServiceDirectory.Shared" Version="1.1.28" />
+	<PackageReference Include="FamilyHubs.SharedKernel" Version="1.0.8" />
+  </ItemGroup>
+
+</Project>
