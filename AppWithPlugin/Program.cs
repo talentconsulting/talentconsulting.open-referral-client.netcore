@@ -54,11 +54,15 @@ namespace AppWithPlugin
 
                 
 
-                ICommand command = commands.FirstOrDefault(c => c.Name == "DataImporter");
-                if (command != null)
+                List<ICommand> plugins = commands.Where(c => c.Name == "DataImporter").ToList();
+                if (plugins != null)
                 {
-                    string servicedirectoryBaseUrl = Configuration["ApplicationServiceApi:ServiceDirectoryUrl"];
-                    var result = await command.Execute(servicedirectoryBaseUrl);
+                    foreach (var command in plugins) 
+                    {
+                        string servicedirectoryBaseUrl = Configuration["ApplicationServiceApi:ServiceDirectoryUrl"];
+                        await command.Execute(servicedirectoryBaseUrl);
+                    }
+                    
                 }
                     
             }
@@ -87,24 +91,25 @@ namespace AppWithPlugin
         static IEnumerable<ICommand> CreateCommands(Assembly assembly)
         {
             int count = 0;
-
-            foreach (Type type in assembly.GetTypes())
+            foreach (var result in from Type type in assembly.GetTypes()
+                                   where typeof(ICommand).IsAssignableFrom(type)
+                                   let result = Activator.CreateInstance(type) as ICommand
+                                   where result != null
+                                   select result)
             {
-                if (typeof(ICommand).IsAssignableFrom(type))
-                {
-                    ICommand result = Activator.CreateInstance(type) as ICommand;
-                    if (result != null)
-                    {
-                        count++;
-                        yield return result;
-                    }
-                }
+                count++;
+                yield return result;
             }
 
+            CommandCountCheck(assembly, count);
+        }
+
+        static void CommandCountCheck(Assembly assembly, int count)
+        {
             if (count == 0)
             {
                 string availableTypes = string.Join(",", assembly.GetTypes().Select(t => t.FullName));
-                throw new ApplicationException(
+                throw new ArgumentException(
                     $"Can't find any type which implements ICommand in {assembly} from {assembly.Location}.\n" +
                     $"Available types: {availableTypes}");
             }

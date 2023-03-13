@@ -46,15 +46,22 @@ public class OrganisationClientService : IOrganisationClientService
 
     public async Task<string> CreateOrganisation(OrganisationWithServicesDto organisation)
     {
-        var request = new RestRequest($"api/organizations").AddJsonBody(Newtonsoft.Json.JsonConvert.SerializeObject(organisation));
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(organisation);
+        var request = new RestRequest($"api/organizations").AddJsonBody(json);
+        request.RequestFormat = DataFormat.Json;
 
-        return await _client.PostAsync<string>(request) ?? string.Empty;
+        await _client.PostAsync(request);
+
+        return organisation.Id;
     }
 
     public async Task<string> UpdateOrganisation(OrganisationWithServicesDto organisation)
     {
         var request = new RestRequest($"api/organizations/{organisation.Id}").AddJsonBody(Newtonsoft.Json.JsonConvert.SerializeObject(organisation));
+        request.RequestFormat = DataFormat.Json;
 
-        return await _client.PutAsync<string>(request) ?? string.Empty;
+        await _client.PutAsync(request);
+
+        return organisation.Id;
     }
 }
