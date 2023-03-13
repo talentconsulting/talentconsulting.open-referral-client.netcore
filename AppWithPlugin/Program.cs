@@ -54,23 +54,11 @@ namespace AppWithPlugin
 
                 
 
-                ICommand command = commands.FirstOrDefault(c => c.Name == "hello");
+                ICommand command = commands.FirstOrDefault(c => c.Name == "DataImporter");
                 if (command != null)
                 {
-                    var result = await command.Execute();
-
-                    //Dictionary<string, OrganisationDto> dictOrganisations = new Dictionary<string, OrganisationDto>();
-                    //var organisationClientService = serviceProvider.GetRequiredService<IOrganisationClientService>();
-                    //List<OrganisationDto> organisations = await organisationClientService.GetListOrganisations();
-                    ////foreach (var organisation in organisations)
-                    ////{
-                    ////    dictOrganisations[organisation.Id] = organisation;
-                    ////}
-
-                    //command.ExecuteWithDependency(organisations);
-
-                    ////await command.ExecuteWithDependency(dictOrganisations);
-                    ////List<MappedOrganisation>  mappedorganisations = await command.ExecuteWithDependency(dictOrganisations);
+                    string servicedirectoryBaseUrl = Configuration["ApplicationServiceApi:ServiceDirectoryUrl"];
+                    var result = await command.Execute(servicedirectoryBaseUrl);
                 }
                     
             }

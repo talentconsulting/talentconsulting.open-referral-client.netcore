@@ -9,6 +9,6 @@ namespace PluginBase
         string Name { get; }
         string Description { get; }
 
-        Task<int> Execute();
+        Task<int> Execute(string arg);
     }
 }

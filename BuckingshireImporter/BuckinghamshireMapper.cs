@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using talentconsulting.open_referral_client;
+using talentconsulting.open_referral_client.Interfaces;
 using talentconsulting.open_referral_client.Models;
 
 namespace HelloPlugin;
@@ -15,26 +16,25 @@ namespace HelloPlugin;
 public class BuckinghamshireMapper
 {
     private Dictionary<string, OrganisationDto> _dictOrganisations;
+    private readonly IOpenReferralClient _openReferralClient;
     private readonly IOrganisationClientService _organisationClientService;
-
+    
     public string Name => "Buckinghamshire Mapper";
 
-    public BuckinghamshireMapper()
+    public BuckinghamshireMapper(IOpenReferralClient openReferralClient, IOrganisationClientService organisationClientService)
     {
-        _organisationClientService = new OrganisationClientService("https://localhost:7022/");
+        _openReferralClient = openReferralClient;
+        _organisationClientService = organisationClientService;
     }
 
-    public async Task AddOrUpdateServices(string baseurl, string basepath)
+    public async Task AddOrUpdateServices()
     {
-        var client = new OpenReferralClient(new Uri(baseurl), basepath);
-
-        var services = await client.GetServices(new
+        var services = await _openReferralClient.GetServices(new
         {
 
         });
 
         await AddAndUpdateServices(services);
-
     }
 
     private async Task AddAndUpdateServices(ServiceResponse serviceResponse)
