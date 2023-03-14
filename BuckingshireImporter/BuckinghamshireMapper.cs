@@ -18,6 +18,7 @@ public class BuckinghamshireMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
+    private readonly HashSet<string> _linkTaxIds;
     private readonly IOpenReferralClient _openReferralClient;
     private readonly IOrganisationClientService _organisationClientService;
     private const string _adminAreaCode = "E06000060";
@@ -28,29 +29,34 @@ public class BuckinghamshireMapper
     {
         _openReferralClient = openReferralClient;
         _organisationClientService = organisationClientService;
+        _linkTaxIds = new HashSet<string>();
     }
 
     public async Task AddOrUpdateServices()
     {
-        var services = await _openReferralClient.GetServices(new
-        {
-
-        });
-
-        await AddAndUpdateServices(services);
-    }
-
-    private async Task AddAndUpdateServices(ServiceResponse serviceResponse)
-    {
-        List<string> errors = new List<string>();
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
+        var services = await _openReferralClient.GetPageServices(1);
+        int totalPages = services.TotalPages;
+        int errors = await AddAndUpdateServices(services);
+        Console.WriteLine($"Completed Page 1 of {totalPages} with {errors} errors");
+        for (int i = 2; i <= totalPages;  i++) 
+        {
+            services = await _openReferralClient.GetPageServices(i);
+            errors = await AddAndUpdateServices(services);
 
+            Console.WriteLine($"Completed Page {i} of {totalPages} with {errors} errors");
+        }
+    }
+
+    private async Task<int> AddAndUpdateServices(ServiceResponse serviceResponse)
+    {
+        List<string> errors = new List<string>();
+        
         foreach (var service in serviceResponse.Services)
         {
             string serviceId = $"{_adminAreaCode.Replace("E", "")}{service.Id.ToString()}";
             OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
-
             bool newOrganisation = false;
             string organisationId = $"{_adminAreaCode.Replace("E", "")}{service.Organisation.Id.ToString()}";
             if (_dictOrganisations.ContainsKey(organisationId))
@@ -79,8 +85,6 @@ public class BuckinghamshireMapper
             }
 
             var builder = new ServicesDtoBuilder();
-
-            
 
             ServiceDto existingService = serviceDirectoryOrganisation.Services.FirstOrDefault(s => s.Id == serviceId);
 
@@ -145,6 +149,8 @@ public class BuckinghamshireMapper
         {
             Console.WriteLine(error);
         }
+
+        return errors.Count;
     }
 
     private async Task<OrganisationWithServicesDto> InitialiseBuckingshireCountyCouncil()
@@ -360,9 +366,18 @@ public class BuckinghamshireMapper
             var listtaxonomies = new List<LinkTaxonomyDto>();
             foreach (var taxonomy in taxonomies)
             {
-                string linktaxonomyId = $"{serviceId}{taxonomy.Id.ToString().ToString()}";
+                string linktaxonomyId = $"{serviceId}{location.Id.ToString().ToString()}{taxonomy.Id.ToString().ToString()}";
+                if (!_linkTaxIds.Contains(linktaxonomyId))
+                {
+                    _linkTaxIds.Add(linktaxonomyId);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Duplicate");
+                }
+
                 string taxonomyId = $"{_adminAreaCode.Replace("E", "")}{taxonomy.Id.ToString().ToString()}";
-                TaxonomyDto taxonomyItem = new TaxonomyDto(taxonomyId, taxonomy.Name, taxonomyType: TaxonomyType.ServiceCategory, parent: null);
+                TaxonomyDto taxonomyItem = new TaxonomyDto(taxonomyId, taxonomy.Name.Trim(), taxonomyType: TaxonomyType.ServiceCategory, parent: null);
                 if (!_dictTaxonomies.ContainsKey(taxonomyId))
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyItem);

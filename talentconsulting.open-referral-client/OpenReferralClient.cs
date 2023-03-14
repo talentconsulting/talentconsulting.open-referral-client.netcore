@@ -61,6 +61,14 @@ namespace talentconsulting.open_referral_client
 
             return result;
         }
+
+        public async Task<ServiceResponse> GetPageServices(int page)
+        {
+            var request = new RestRequest($"{_basePath}/services?&page={page}");
+            var result = await _client.GetAsync<ServiceResponse>(request);
+
+            return result;
+        }
     }
 }
 
