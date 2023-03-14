@@ -4,10 +4,9 @@ using Newtonsoft.Json;
 
 namespace talentconsulting.open_referral_client.Models
 {
-    public class Service: BaseModel
-    {
-        public int Id { get; set; }
 
+    public class Service: ServiceBase
+    {
         public string Name { get; set; }
 
         public string Description { get; set; }

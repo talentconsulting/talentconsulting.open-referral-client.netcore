@@ -37,6 +37,34 @@ namespace talentconsulting.open_referral_client.tests
                         }
 
                         return await Task.FromResult(responseMessage);
+                    default:
+                        var localpath = request.RequestUri.LocalPath.Split("/");
+
+                        if (localpath.SkipLast(1).Last() == "services")
+                        {
+                            //we have an individual service request
+                            if (localpath.Last() == "unknown")
+                            {
+                                responseMessage = new HttpResponseMessage(HttpStatusCode.NotFound)
+                                {
+                                    RequestMessage = request
+                                };
+                            }
+                            else
+                            {
+                                responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+                                {
+                                    RequestMessage = request
+                                };
+
+                                responseMessage.Content = new StringContent(File.ReadAllTextAsync(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                    "canned-responses/service_response.json").ReplaceLineEndings()).Result, Encoding.UTF8, "application/json");
+                            }
+
+                            return await Task.FromResult(responseMessage);
+                        }
+
+                        break;
                 }
 
                 throw new NotImplementedException("Interface not mocked");

@@ -31,5 +31,6 @@
   <ItemGroup>
     <None Update="canned-responses\services_page_1.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="canned-responses\services_page_2.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="canned-responses\service_response.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
