@@ -9,6 +9,8 @@ namespace talentconsulting.open_referral_client.Interfaces
 	{
         Task<ServiceResponse> GetServices<T>(T args);
         Task<ServiceResponse> GetPageServices(int page);
+
+        Task<ServiceBase> GetService(string id);
     }
 }
 
