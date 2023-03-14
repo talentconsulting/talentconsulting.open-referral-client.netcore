@@ -17,11 +17,11 @@ namespace HelloPlugin;
 public class BuckinghamshireMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
+    private Dictionary<string, TaxonomyDto> _dictTaxonomies;
     private readonly IOpenReferralClient _openReferralClient;
     private readonly IOrganisationClientService _organisationClientService;
     private const string _adminAreaCode = "E06000060";
-
-
+ 
     public string Name => "Buckinghamshire Mapper";
 
     public BuckinghamshireMapper(IOpenReferralClient openReferralClient, IOrganisationClientService organisationClientService)
@@ -44,10 +44,16 @@ public class BuckinghamshireMapper
     {
         List<string> errors = new List<string>();
         await CreateOrganisationDictionary();
+        await CreateTaxonomyDictionary();
 
         foreach (var service in serviceResponse.Services)
         {
             string serviceId = $"{_adminAreaCode.Replace("E", "")}{service.Id.ToString()}";
+            string[] ids = { "060000605872", "060000606377" };
+            if (ids.Contains(serviceId))
+            {
+                System.Diagnostics.Debug.WriteLine("Got Here");
+            }
             OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
             bool newOrganisation = false;
@@ -191,6 +197,16 @@ public class BuckinghamshireMapper
         }
     }
 
+    private async Task CreateTaxonomyDictionary()
+    {
+        _dictTaxonomies = new Dictionary<string, TaxonomyDto>();
+        var allTaxonomies = await _organisationClientService.GetTaxonomyList(1, 99);
+        foreach(var taxonomy in allTaxonomies.Items)
+        {
+            _dictTaxonomies[taxonomy.Id] = taxonomy;
+        }
+    }
+
     private List<EligibilityDto> GetEligibilityDtos(Dictionary<string, JToken> data, ServiceDto existingService)
     {
         int id = 0;
@@ -259,7 +275,6 @@ public class BuckinghamshireMapper
         if (data.ContainsKey("valid_from") && data.TryGetValue("valid_from", out JToken validFromToken) && validFromToken.ToString().Any() && DateTime.TryParse(validFromToken.ToString(), out DateTime dtValidFrom))
         {
             validFrom = dtValidFrom;
-
         }
         DateTime? validTo = null;
         if (data.ContainsKey("valid_to") && data.TryGetValue("valid_to", out JToken validToToken) && validToToken.ToString().Any() && DateTime.TryParse(validToToken.ToString(), out DateTime dtValidTo))
@@ -298,6 +313,10 @@ public class BuckinghamshireMapper
         }
         foreach (var contact in contacts)
         {
+            if (string.IsNullOrEmpty(contact.Phone))
+            {
+                continue;
+            }
             string contactId = $"{_adminAreaCode.Replace("E", "")}{contact.Id.ToString().ToString()}";
             if (existingService != null)
             {
@@ -332,7 +351,6 @@ public class BuckinghamshireMapper
         {
             string locationId = $"{_adminAreaCode.Replace("E", "")}{location.Id.ToString().ToString()}";
            
-
             var physicalAddresses = new List<PhysicalAddressDto>()
             {
                 new PhysicalAddressDto(id: locationId, address1: GetValueFromDictionary("address_1", location.Data), city: GetValueFromDictionary("city", location.Data), postCode: GetValueFromDictionary("postal_code", location.Data), country: GetValueFromDictionary("country", location.Data), stateProvince: GetValueFromDictionary("state_province", location.Data))
@@ -347,13 +365,19 @@ public class BuckinghamshireMapper
             var listtaxonomies = new List<LinkTaxonomyDto>();
             foreach (var taxonomy in taxonomies)
             {
+                string linktaxonomyId = $"{serviceId}{taxonomy.Id.ToString().ToString()}";
                 string taxonomyId = $"{_adminAreaCode.Replace("E", "")}{taxonomy.Id.ToString().ToString()}";
+                TaxonomyDto taxonomyItem = new TaxonomyDto(taxonomyId, taxonomy.Name, taxonomyType: TaxonomyType.ServiceCategory, parent: null);
+                if (!_dictTaxonomies.ContainsKey(taxonomyId))
+                {
+                    _organisationClientService.CreateTaxonomy(taxonomyItem);
+                    _dictTaxonomies[taxonomyItem.Id]=taxonomyItem;
+                }
 
-                listtaxonomies.Add(new LinkTaxonomyDto(id: taxonomyId, serviceId, "Location",
-                    new TaxonomyDto(taxonomyId, taxonomy.Name, taxonomyType: TaxonomyType.ServiceCategory, parent: null)));
+                listtaxonomies.Add(new LinkTaxonomyDto(id: linktaxonomyId, serviceId, "Location", taxonomyItem));
             }
 
-            var locationDto = new LocationDto(id: locationId, name: location.Name ?? "Location", description: location.Name ?? "Location", latitude: location.Geometry.Coordinates[1], longitude: location.Geometry.Coordinates[1], physicalAddresses: physicalAddresses, linkTaxonomies: listtaxonomies, linkContacts: new List<LinkContactDto>());
+            var locationDto = new LocationDto(id: locationId, name: location.Name ?? locationId, description: location.Name ?? locationId, latitude: location.Geometry.Coordinates[1], longitude: location.Geometry.Coordinates[0], physicalAddresses: physicalAddresses, linkTaxonomies: listtaxonomies, linkContacts: new List<LinkContactDto>());
 
             var existingServiceAtLocation = list.FirstOrDefault(x => x.Id == locationId);
             if (existingServiceAtLocation != null)
