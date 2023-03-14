@@ -34,13 +34,14 @@ public class BuckinghamshireMapper
 
     public async Task AddOrUpdateServices()
     {
+        const int startPage = 1;
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
-        var services = await _openReferralClient.GetPageServices(1);
+        var services = await _openReferralClient.GetPageServices(startPage);
         int totalPages = services.TotalPages;
         int errors = await AddAndUpdateServices(services);
-        Console.WriteLine($"Completed Page 1 of {totalPages} with {errors} errors");
-        for (int i = 2; i <= totalPages;  i++) 
+        Console.WriteLine($"Completed Page {startPage} {totalPages} with {errors} errors");
+        for (int i = startPage + 1; i <= totalPages;  i++) 
         {
             services = await _openReferralClient.GetPageServices(i);
             errors = await AddAndUpdateServices(services);
@@ -57,6 +58,13 @@ public class BuckinghamshireMapper
         {
             string serviceId = $"{_adminAreaCode.Replace("E", "")}{service.Id.ToString()}";
             OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
+
+            //string[] ids = { "060000609932" };
+            //if (ids.Contains(serviceId))
+            //{
+            //    System.Diagnostics.Debug.WriteLine("Got Here");
+            //}
+
             bool newOrganisation = false;
             string organisationId = $"{_adminAreaCode.Replace("E", "")}{service.Organisation.Id.ToString()}";
             if (_dictOrganisations.ContainsKey(organisationId))
