@@ -8,6 +8,8 @@ namespace talentconsulting.open_referral_client.Interfaces
 	public interface IManageServices
 	{
         Task<ServiceResponse> GetServices<T>(T args);
+
+        Task<ServiceBase> GetService(string id);
     }
 }
 

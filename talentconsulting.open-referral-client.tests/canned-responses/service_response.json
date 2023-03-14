@@ -1,0 +1,105 @@
+﻿{
+  "id": 6378,
+  "updated_at": "2021-09-14T13:05:10.022Z",
+  "name": "Weekday Walking Group",
+  "description": "Meet 2nd Monday of the month, usually up to 8 miles followed by a pub lunch. Meet at 9:30 am on The Green to share lifts. All welcome.",
+  "url": "https://www.wingrave-wca.co.uk/directory/leisure-sport-social/",
+  "min_age": 18,
+  "max_age": null,
+  "age_band_under_2": null,
+  "age_band_2": null,
+  "age_band_3_4": null,
+  "age_band_5_7": null,
+  "age_band_8_plus": null,
+  "age_band_all": null,
+  "needs_referral": null,
+  "free": null,
+  "created_at": "2021-09-14T13:05:10.022Z",
+  "status": "active",
+  "target_directories": [
+    {
+      "name": "Buckinghamshire Online Directory",
+      "label": "bod"
+    }
+  ],
+  "locations": [
+    {
+      "id": 7291,
+      "name": null,
+      "address_1": "Wingrave Community Centre, Church Street, Wingrave",
+      "city": "Wingrave",
+      "state_province": "Buckinghamshire",
+      "postal_code": "HP22 4PE",
+      "country": "GB",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -0.738887, 51.863084 ]
+      },
+      "mask_exact_address": null,
+      "accessibilities": [
+        {
+          "name": "Wheelchair accessible entrance",
+          "slug": "wheelchair-accessible-entrance"
+        },
+        {
+          "name": "Car parking",
+          "slug": "car-parking"
+        },
+        {
+          "name": "Bus stop nearby",
+          "slug": "bus-stop-nearby"
+        }
+      ]
+    }
+  ],
+  "contacts": [
+    {
+      "id": 9881,
+      "name": "Jan Walmsley",
+      "title": null,
+      "email": "susanscottage@btinternet.com",
+      "phone": "01296 681522"
+    }
+  ],
+  "meta": [],
+  "organisation": {
+    "id": 4373,
+    "name": "Wingrave Community Association",
+    "description": null,
+    "email": null,
+    "url": null
+  },
+  "taxonomies": [
+    {
+      "id": 403,
+      "name": "Staying active",
+      "slug": "staying-active",
+      "parent_id": null
+    }
+  ],
+  "regular_schedules": [
+    {
+      "id": 8308,
+      "weekday": "Monday",
+      "opens_at": "09:30",
+      "closes_at": "12:00"
+    }
+  ],
+  "cost_options": [],
+  "links": [],
+  "send_needs": [],
+  "suitabilities": [
+    {
+      "id": 2,
+      "name": "Older people",
+      "slug": "older-people"
+    },
+    {
+      "id": 4,
+      "name": "Physical disabilities",
+      "slug": "physical-disabilities"
+    }
+  ],
+  "local_offer": null,
+  "distance_away": null
+}
