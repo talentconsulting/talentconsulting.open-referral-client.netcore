@@ -49,11 +49,6 @@ public class BuckinghamshireMapper
         foreach (var service in serviceResponse.Services)
         {
             string serviceId = $"{_adminAreaCode.Replace("E", "")}{service.Id.ToString()}";
-            string[] ids = { "060000605872", "060000606377" };
-            if (ids.Contains(serviceId))
-            {
-                System.Diagnostics.Debug.WriteLine("Got Here");
-            }
             OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
             bool newOrganisation = false;
