@@ -10,7 +10,7 @@ namespace BuckinghamshireImport
     public class BuckImportCommand : ICommand
     {
         public string Name { get => "DataImporter"; }
-        public string Description { get => "Displays hello message."; }
+        public string Description { get => "Imports Buckinghamshire Data."; }
 
         public async Task<int> Execute(string arg)
         {

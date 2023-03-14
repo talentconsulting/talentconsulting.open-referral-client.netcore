@@ -10,11 +10,11 @@ namespace ElmbridgeImporter
     public class ElmbridgeCommand : ICommand
     {
         public string Name { get => "DataImporter"; }
-        public string Description { get => "Displays hello message."; }
+        public string Description { get => "Imports Elmbridge Data."; }
 
         public async Task<int> Execute(string arg)
         {
-            Console.WriteLine("Starting Buckinghamshire Mapper");
+            Console.WriteLine("Starting Elmbridge Mapper");
 #pragma warning disable S1075 // URIs should not be hardcoded
             IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
             IOpenReferralClient openReferralByServiceIdClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
@@ -24,7 +24,7 @@ namespace ElmbridgeImporter
             ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(openReferralClient, openReferralByServiceIdClient, organisationClientService);
 #pragma warning restore S1075 // URIs should not be hardcoded
             await elmbridgeMapper.AddOrUpdateServices();
-            Console.WriteLine("Finished Buckinghamshire Mapper");
+            Console.WriteLine("Finished Elmbridge Mapper");
             return 0;
         }
     }
