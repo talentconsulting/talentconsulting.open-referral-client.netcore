@@ -12,22 +12,24 @@ using talentconsulting.open_referral_client.Interfaces;
 using talentconsulting.open_referral_client.Models;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace BuckinghamshireImport;
+namespace ElmbridgeImporter;
 
-public class BuckinghamshireMapper
+public class ElmbridgeMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
     private readonly HashSet<string> _linkTaxIds;
     private readonly IOpenReferralClient _openReferralClient;
+    private readonly IOpenReferralClient _openReferralByServiceIdClient;
     private readonly IOrganisationClientService _organisationClientService;
     private const string _adminAreaCode = "E06000060";
  
-    public string Name => "Buckinghamshire Mapper";
+    public string Name => "Elmbridge Mapper";
 
-    public BuckinghamshireMapper(IOpenReferralClient openReferralClient, IOrganisationClientService organisationClientService)
+    public ElmbridgeMapper(IOpenReferralClient openReferralClient, IOpenReferralClient openReferralByServiceIdClient, IOrganisationClientService organisationClientService)
     {
         _openReferralClient = openReferralClient;
+        _openReferralByServiceIdClient = openReferralByServiceIdClient;
         _organisationClientService = organisationClientService;
         _linkTaxIds = new HashSet<string>();
     }
@@ -37,17 +39,17 @@ public class BuckinghamshireMapper
         const int startPage = 1;
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
-        var services = await _openReferralClient.GetPageServices(startPage);
-        int totalPages = services.TotalPages;
-        int errors = await AddAndUpdateServices(services);
-        Console.WriteLine($"Completed Page {startPage} {totalPages} with {errors} errors");
-        for (int i = startPage + 1; i <= totalPages;  i++) 
-        {
-            services = await _openReferralClient.GetPageServices(i);
-            errors = await AddAndUpdateServices(services);
+        //var services = await _openReferralClient.GetPageServices(startPage);
+        //int totalPages = services.TotalPages;
+        //int errors = await AddAndUpdateServices(services);
+        //Console.WriteLine($"Completed Page {startPage} {totalPages} with {errors} errors");
+        //for (int i = startPage + 1; i <= totalPages;  i++) 
+        //{
+        //    services = await _openReferralClient.GetPageServices(i);
+        //    errors = await AddAndUpdateServices(services);
 
-            Console.WriteLine($"Completed Page {i} of {totalPages} with {errors} errors");
-        }
+        //    Console.WriteLine($"Completed Page {i} of {totalPages} with {errors} errors");
+        //}
     }
 
     private async Task<int> AddAndUpdateServices(ServiceResponse serviceResponse)
@@ -161,18 +163,18 @@ public class BuckinghamshireMapper
         return errors.Count;
     }
 
-    private async Task<OrganisationWithServicesDto> InitialiseBuckingshireCountyCouncil()
+    private async Task<OrganisationWithServicesDto> InitialiseElmbridgeCouncil()
     {
 #pragma warning disable S1075 // URIs should not be hardcoded
-        var buckCouncil = new OrganisationWithServicesDto(
-        "300df704-c284-4c21-8a54-ae95d1a5d942",
-            new OrganisationTypeDto("1", "LA", "Local Authority"), "Buckingshire Council", "Buckingshire Council", null, new Uri("https://www.buckinghamshire.gov.uk/").ToString(), "https://www.buckinghamshire.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
+        var elmbridgeCouncil = new OrganisationWithServicesDto(
+        "ddafc1ea-089c-40ba-9b41-b1a8739fb628",
+            new OrganisationTypeDto("1", "LA", "Local Authority"), "Elmbridge Council", "Elmbridge Council", null, new Uri("https://www.elmbridge.gov.uk/").ToString(), "https://www.elmbridge.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
 
-        buckCouncil.AdminAreaCode = _adminAreaCode;
+        elmbridgeCouncil.AdminAreaCode = _adminAreaCode;
 
-        await _organisationClientService.CreateOrganisation(buckCouncil);
-        
-        return buckCouncil;
+        await _organisationClientService.CreateOrganisation(elmbridgeCouncil);
+
+        return elmbridgeCouncil;
 #pragma warning restore S1075 // URIs should not be hardcoded
     }
 
@@ -180,10 +182,10 @@ public class BuckinghamshireMapper
     {
         _dictOrganisations = new Dictionary<string, OrganisationWithServicesDto>();
         List<OrganisationDto> organisations = await _organisationClientService.GetListOrganisations();
-        var buckinghamshire = organisations.FirstOrDefault(x => x.Name.Contains("Buck"));
-        if (buckinghamshire == null) 
+        var elmbridge = organisations.FirstOrDefault(x => x.Name.Contains("Elmbridge"));
+        if (elmbridge == null) 
         {
-            var buckCouncil = await InitialiseBuckingshireCountyCouncil();
+            var buckCouncil = await InitialiseElmbridgeCouncil();
             _dictOrganisations[buckCouncil.Id] = buckCouncil;
         }
         

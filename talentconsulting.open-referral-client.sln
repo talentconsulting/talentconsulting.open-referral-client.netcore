@@ -21,13 +21,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflows", "github-
 		.github\workflows\nuget-publish.yml = .github\workflows\nuget-publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuckingshireImporter", "BuckingshireImporter\BuckingshireImporter.csproj", "{AEF6B680-5B45-4F99-A0A7-758583C022D6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceDirectoryClient", "ServiceDirectoryClient\ServiceDirectoryClient.csproj", "{30D61190-1542-4DE9-BC7D-EFA56B6F9DC8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase", "PluginBase\PluginBase.csproj", "{D9972AF1-1689-4D09-A2C6-1BF727AD053D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppWithPlugin", "AppWithPlugin\AppWithPlugin.csproj", "{2E69CC08-683C-4A1F-BF53-5680533EA9D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElmbridgeImporter", "ElmbridgeImporter\ElmbridgeImporter.csproj", "{C8EF513F-89BB-4D09-B7DF-23F89FEF8B7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuckingshireImporter", "BuckingshireImporter\BuckingshireImporter.csproj", "{81A61B78-FBBE-43F4-9ED7-EB986341A7C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +49,6 @@ Global
 		{671BE089-0E2C-48A0-BCBC-EC9D4CE05CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671BE089-0E2C-48A0-BCBC-EC9D4CE05CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671BE089-0E2C-48A0-BCBC-EC9D4CE05CE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEF6B680-5B45-4F99-A0A7-758583C022D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEF6B680-5B45-4F99-A0A7-758583C022D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEF6B680-5B45-4F99-A0A7-758583C022D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEF6B680-5B45-4F99-A0A7-758583C022D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30D61190-1542-4DE9-BC7D-EFA56B6F9DC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30D61190-1542-4DE9-BC7D-EFA56B6F9DC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D61190-1542-4DE9-BC7D-EFA56B6F9DC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +61,14 @@ Global
 		{2E69CC08-683C-4A1F-BF53-5680533EA9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E69CC08-683C-4A1F-BF53-5680533EA9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E69CC08-683C-4A1F-BF53-5680533EA9D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8EF513F-89BB-4D09-B7DF-23F89FEF8B7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8EF513F-89BB-4D09-B7DF-23F89FEF8B7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8EF513F-89BB-4D09-B7DF-23F89FEF8B7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8EF513F-89BB-4D09-B7DF-23F89FEF8B7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81A61B78-FBBE-43F4-9ED7-EB986341A7C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A61B78-FBBE-43F4-9ED7-EB986341A7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81A61B78-FBBE-43F4-9ED7-EB986341A7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81A61B78-FBBE-43F4-9ED7-EB986341A7C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

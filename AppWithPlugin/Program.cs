@@ -43,7 +43,8 @@ namespace AppWithPlugin
 
                 string[] pluginPaths = new string[]
                 {
-                    @"BuckingshireImporter\bin\Debug\net7.0\BuckingshireImporter.dll",
+                    //@"BuckingshireImporter\bin\Debug\net7.0\BuckingshireImporter.dll",
+                    @"ElmbridgeImporter\bin\Debug\net7.0\ElmbridgeImporter.dll",
                 };
 
                 IEnumerable<ICommand> commands = pluginPaths.SelectMany(pluginPath =>

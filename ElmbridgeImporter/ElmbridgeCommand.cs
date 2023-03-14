@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using talentconsulting.open_referral_client;
 using talentconsulting.open_referral_client.Interfaces;
 
-namespace BuckinghamshireImport
+namespace ElmbridgeImporter
 {
-    public class BuckImportCommand : ICommand
+    public class ElmbridgeCommand : ICommand
     {
         public string Name { get => "DataImporter"; }
         public string Description { get => "Displays hello message."; }
@@ -16,13 +16,14 @@ namespace BuckinghamshireImport
         {
             Console.WriteLine("Starting Buckinghamshire Mapper");
 #pragma warning disable S1075 // URIs should not be hardcoded
-            IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://api.familyinfo.buckinghamshire.gov.uk"), "api/v1");
+            IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
+            IOpenReferralClient openReferralByServiceIdClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
             IOrganisationClientService organisationClientService = new OrganisationClientService(arg);
 
 
-            BuckinghamshireMapper BuckinghamshireMapper = new BuckinghamshireMapper(openReferralClient, organisationClientService);
+            ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(openReferralClient, openReferralByServiceIdClient, organisationClientService);
 #pragma warning restore S1075 // URIs should not be hardcoded
-            await BuckinghamshireMapper.AddOrUpdateServices();
+            await elmbridgeMapper.AddOrUpdateServices();
             Console.WriteLine("Finished Buckinghamshire Mapper");
             return 0;
         }
