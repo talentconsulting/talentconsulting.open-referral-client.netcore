@@ -4,6 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>talentconsulting.open_referral_client</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <VersionSuffix>1.0.0.$([System.DateTime]::UtcNow.ToString(mmff))</VersionSuffix>
+    <AssemblyVersion Condition=" '$(VersionSuffix)' == '' ">0.0.0.1</AssemblyVersion>
+    <AssemblyVersion Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</AssemblyVersion>
+    <Version Condition=" '$(VersionSuffix)' == '' ">0.0.1.0</Version>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <ItemGroup>
