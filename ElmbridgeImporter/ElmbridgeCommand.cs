@@ -1,4 +1,5 @@
-﻿using PluginBase;
+﻿using ElmbridgeImporter.Services;
+using PluginBase;
 using ServiceDirectory;
 using System;
 using System.Threading.Tasks;
@@ -16,12 +17,13 @@ namespace ElmbridgeImporter
         {
             Console.WriteLine("Starting Elmbridge Mapper");
 #pragma warning disable S1075 // URIs should not be hardcoded
-            IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
-            IOpenReferralClient openReferralByServiceIdClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
+            //IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
+            //IOpenReferralClient openReferralByServiceIdClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
+            IElmbridgeClientService elmbridgeClientService = new ElmbridgeClientService("https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2");
             IOrganisationClientService organisationClientService = new OrganisationClientService(arg);
 
 
-            ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(openReferralClient, openReferralByServiceIdClient, organisationClientService);
+            ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(elmbridgeClientService, organisationClientService);
 #pragma warning restore S1075 // URIs should not be hardcoded
             await elmbridgeMapper.AddOrUpdateServices();
             Console.WriteLine("Finished Elmbridge Mapper");
