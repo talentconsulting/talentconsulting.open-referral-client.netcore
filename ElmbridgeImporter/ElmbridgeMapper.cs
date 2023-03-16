@@ -2,20 +2,12 @@
 using FamilyHubs.ServiceDirectory.Shared.Builders;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using IdGen;
-using Newtonsoft.Json.Linq;
+using Pipelines.Sockets.Unofficial.Arenas;
 using ServiceDirectory;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using talentconsulting.open_referral_client.Interfaces;
-using talentconsulting.open_referral_client.Models;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ElmbridgeImporter;
 
@@ -23,7 +15,8 @@ public class ElmbridgeMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
-    private readonly HashSet<string> _linkTaxIds;
+    private readonly Dictionary<string, ServiceTaxonomyDto> _dictServiceTaxonomies;
+    private List<TaxonomyDto> _alltaxonomies;
     private readonly IElmbridgeClientService _elmbridgeClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private const string _adminAreaCode = "E07000207";
@@ -34,7 +27,7 @@ public class ElmbridgeMapper
     {
         _elmbridgeClientService = elmbridgeClientService;
         _organisationClientService = organisationClientService;
-        _linkTaxIds = new HashSet<string>();
+        _dictServiceTaxonomies = new Dictionary<string, ServiceTaxonomyDto>();
     }
 
     public async Task AddOrUpdateServices()
@@ -43,20 +36,41 @@ public class ElmbridgeMapper
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
         ElmbridgeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(startPage);
+        int totalPages = elmbridgeSimpleService.totalPages;
+        int errorCount = 0;
         foreach (var item in elmbridgeSimpleService.content)
         {
-            ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(item.id);
+            try
+            {
+                ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(item.id);
+                errorCount += await AddAndUpdateService(elmbridgeService);
+            }
+            catch
+            {
+                Console.WriteLine($"Failed to get service for id: {item.id}");
+            }
+            
         }
-        //int totalPages = services.TotalPages;
-        //int errors = await AddAndUpdateServices(services);
-        //Console.WriteLine($"Completed Page {startPage} {totalPages} with {errors} errors");
-        //for (int i = startPage + 1; i <= totalPages;  i++) 
-        //{
-        //    services = await _openReferralClient.GetPageServices(i);
-        //    errors = await AddAndUpdateServices(services);
+        Console.WriteLine($"Completed Page {startPage} {totalPages} with {errorCount} errors"); 
+        for (int i = startPage + 1; i <= totalPages;  i++) 
+        {
+            errorCount = 0;
+            elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(i);
+            foreach (var item in elmbridgeSimpleService.content)
+            {
+                try
+                {
+                    ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(item.id);
+                    errorCount += await AddAndUpdateService(elmbridgeService);
+                }
+                catch
+                {
+                    Console.WriteLine($"Failed to get service for id: {item.id}");
+                }
+            }
 
-        //    Console.WriteLine($"Completed Page {i} of {totalPages} with {errors} errors");
-        //}
+            Console.WriteLine($"Completed Page {i} of {totalPages} with {errorCount} errors");
+        }
     }
 
     private async Task<int> AddAndUpdateService(ElmbridgeService elmbridgeService)
@@ -118,7 +132,50 @@ public class ElmbridgeMapper
             .WithHolidaySchedules(GetHolidaySchedules(elmbridgeService.holiday_schedules, existingService))
             .WithLinkContact(GetLinkContactDtos(serviceId, elmbridgeService.contacts, existingService))
             .WithServiceAtLocations(GetServiceAtLocations(elmbridgeService.service_at_locations, existingService))
+            .WithLanguages(GetLanguages(elmbridgeService.languages, existingService))
+            .WithServiceTaxonomies(GetServiceTaxonomies(elmbridgeService.service_taxonomys, existingService))
             .Build();
+
+        if (serviceId == "07000207f26784ce-0099-4f16-b314-718d83ad76fd")
+        {
+            System.Diagnostics.Debug.WriteLine("Got Here");
+        }
+
+        if (newOrganisation)
+        {
+            //Create Organisation
+            serviceDirectoryOrganisation.Services.Add(newService);
+
+            try
+            {
+                await _organisationClientService.CreateOrganisation(serviceDirectoryOrganisation);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Failed to Create Organisation with Service Id:{serviceId} {ex.Message}");
+            }
+
+        }
+        else
+        {
+
+            OrganisationWithServicesDto organisationWithServicesDto = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+            if (organisationWithServicesDto.Services == null)
+            {
+                organisationWithServicesDto.Services = new List<ServiceDto>();
+            }
+
+            organisationWithServicesDto.Services.Add(newService);
+
+            try
+            {
+                await _organisationClientService.UpdateOrganisation(organisationWithServicesDto);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Failed to Update Organisation with Service Id:{serviceId} {ex.Message}");
+            }
+        }
 
         foreach (string error in errors) 
         {
@@ -189,8 +246,9 @@ public class ElmbridgeMapper
     private async Task CreateTaxonomyDictionary()
     {
         _dictTaxonomies = new Dictionary<string, TaxonomyDto>();
-        var allTaxonomies = await _organisationClientService.GetTaxonomyList(1, 99);
-        foreach(var taxonomy in allTaxonomies.Items)
+        var allTaxonomies = await _organisationClientService.GetTaxonomyList(1, 9999);
+        _alltaxonomies = allTaxonomies.Items;
+        foreach (var taxonomy in allTaxonomies.Items)
         {
             _dictTaxonomies[taxonomy.Id] = taxonomy;
         }
@@ -208,21 +266,17 @@ public class ElmbridgeMapper
         foreach (Eligibility eligibility in eligibilities)
         {
             string eligibilityId = $"{_adminAreaCode.Replace("E", "")}{eligibility.id}";
-            if (existingService != null)
+            
+            EligibilityDto existing = listEligibilityDto.FirstOrDefault(x => x.Id == eligibility.id);
+            if (existing != null)
             {
-                EligibilityDto existing = existingService.Eligibilities.FirstOrDefault(x => x.Id == eligibility.id);
-                if (existing != null)
-                {
-                    existingService.Eligibilities.Remove(existing);
-                }
+                listEligibilityDto.Remove(existing);
             }
             
             listEligibilityDto.Add(new EligibilityDto(id: eligibilityId, eligibilityDescription: eligibility.eligibility, maximumAge: eligibility.maximum_age, minimumAge: eligibility.minimum_age) );
         }
 
         return listEligibilityDto;
-
-        
     }
 
     private List<CostOptionDto> GetCostOptionDtos(string serviceId, Cost_Options[] costOptions, ServiceDto existingService)
@@ -240,14 +294,15 @@ public class ElmbridgeMapper
 
         foreach (Cost_Options costOption in costOptions)
         {
+            if (string.IsNullOrEmpty(costOption.amount_description))
+                continue;
+
             string costOptionId = $"{_adminAreaCode.Replace("E", "")}{costOption.id}";
-            if (existingService != null)
+            
+            CostOptionDto existing = listCostOptionDto.FirstOrDefault(x => x.Id == costOptionId);
+            if (existing != null)
             {
-                CostOptionDto existing = existingService.CostOptions.FirstOrDefault(x => x.Id == costOptionId);
-                if (existing != null)
-                {
-                    existingService.CostOptions.Remove(existing);
-                }
+                listCostOptionDto.Remove(existing);
             }
             
             listCostOptionDto.Add(new CostOptionDto(id: costOptionId, amountDescription: costOption.amount_description, amount: costOption.amount, linkId: serviceId, option: costOption.option, validFrom: GetDateFromString(costOption.valid_from), validTo: GetDateFromString(costOption.valid_to)));
@@ -272,13 +327,11 @@ public class ElmbridgeMapper
         foreach (Service_Area serviceArea in serviceAreas)
         {
             string serviceAreaId = $"{_adminAreaCode.Replace("E", "")}{serviceArea.id}";
-            if (existingService != null)
+            
+            ServiceAreaDto existing = listServiceAreaDto.FirstOrDefault(x => x.Id == serviceAreaId);
+            if (existing != null)
             {
-                ServiceAreaDto existing = existingService.ServiceAreas.FirstOrDefault(x => x.Id == serviceAreaId);
-                if (existing != null)
-                {
-                    existingService.ServiceAreas.Remove(existing);
-                }
+                listServiceAreaDto.Remove(existing);
             }
             
             listServiceAreaDto.Add(new ServiceAreaDto(id: serviceAreaId, serviceAreaDescription: serviceArea.service_area, extent: serviceArea.extent, uri: null));
@@ -304,16 +357,12 @@ public class ElmbridgeMapper
         foreach (Funding funding in fundings)
         {
             string fundingId = $"{_adminAreaCode.Replace("E", "")}{funding.id}";
-            if (existingService != null)
+            FundingDto existing = listFundingDto.FirstOrDefault(x => x.Id == fundingId);
+            if (existing != null)
             {
-                FundingDto existing = existingService.Fundings.FirstOrDefault(x => x.Id == fundingId);
-                if (existing != null)
-                {
-                    existingService.Fundings.Remove(existing);
-                }
+                listFundingDto.Remove(existing);
             }
             
-
             listFundingDto.Add(new FundingDto(id: fundingId, funding.source));
         }
 
@@ -337,13 +386,10 @@ public class ElmbridgeMapper
         foreach (Regular_Schedule regularSchedule in regularSchedules)
         {
             string regularScheduleId = $"{_adminAreaCode.Replace("E", "")}{regularSchedule.id}";
-            if (existingService != null)
+            RegularScheduleDto existing = listRegularScheduleDto.FirstOrDefault(x => x.Id == regularScheduleId);
+            if (existing != null)
             {
-                RegularScheduleDto existing = existingService.RegularSchedules.FirstOrDefault(x => x.Id == regularScheduleId);
-                if (existing != null)
-                {
-                    existingService.RegularSchedules.Remove(existing);
-                }
+                listRegularScheduleDto.Remove(existing);
             }
             
             listRegularScheduleDto.Add(new RegularScheduleDto(id: regularScheduleId, description: regularSchedule.description, opensAt: GetDateFromString(regularSchedule.opens_at), closesAt: GetDateFromString(regularSchedule.closes_at), byDay: regularSchedule.byday, byMonthDay: regularSchedule.bymonthday, dtStart: regularSchedule.dtstart, freq: regularSchedule.freq, interval: regularSchedule.interval, validFrom: GetDateFromString(regularSchedule.valid_from), GetDateFromString(regularSchedule.valid_to)));
@@ -368,15 +414,12 @@ public class ElmbridgeMapper
         foreach (HolidaySchedule holidaySchedule in holidaySchedules)
         {
             string holidayScheduleId = $"{_adminAreaCode.Replace("E", "")}{holidaySchedule.id}";
-            if (existingService != null)
+            HolidayScheduleDto existing = listHolidayScheduleDto.FirstOrDefault(x => x.Id == holidayScheduleId);
+            if (existing != null)
             {
-                HolidayScheduleDto existing = existingService.HolidaySchedules.FirstOrDefault(x => x.Id == holidayScheduleId);
-                if (existing != null)
-                {
-                    existingService.HolidaySchedules.Remove(existing);
-                }
+                listHolidayScheduleDto.Remove(existing);
             }
-            
+
             bool.TryParse(holidaySchedule.closed, out bool closed);
 
             listHolidayScheduleDto.Add(new HolidayScheduleDto(id: holidayScheduleId, closed: closed, closesAt: GetDateFromString(holidaySchedule.closes_at), startDate: GetDateFromString(holidaySchedule.start_date), endDate: GetDateFromString(holidaySchedule.end_date), GetDateFromString(holidaySchedule.open_at)));
@@ -391,14 +434,18 @@ public class ElmbridgeMapper
         foreach (Regular_Schedule regularSchedule in serviceAtLocation.regular_schedule)
         {
             string regularScheduleId = $"{_adminAreaCode.Replace("E", "")}{regularSchedule.id}";
-            foreach (var item in existingService.ServiceAtLocations.Select(x => x.RegularSchedules))
+            if (existingService != null) 
             {
-                RegularScheduleDto existing = item.FirstOrDefault(x => x.Id == regularScheduleId);
-                if (existing != null)
+                foreach (var item in existingService.ServiceAtLocations.Select(x => x.RegularSchedules))
                 {
-                    item.Remove(existing);
+                    RegularScheduleDto existing = item.FirstOrDefault(x => x.Id == regularScheduleId);
+                    if (existing != null)
+                    {
+                        item.Remove(existing);
+                    }
                 }
             }
+            
 
             listRegularScheduleDto.Add(new RegularScheduleDto(id: regularScheduleId, description: regularSchedule.description, opensAt: GetDateFromString(regularSchedule.opens_at), closesAt: GetDateFromString(regularSchedule.closes_at), byDay: regularSchedule.byday, byMonthDay: regularSchedule.bymonthday, dtStart: regularSchedule.dtstart, freq: regularSchedule.freq, interval: regularSchedule.interval, validFrom: GetDateFromString(regularSchedule.valid_from), GetDateFromString(regularSchedule.valid_to)));
         }
@@ -412,15 +459,18 @@ public class ElmbridgeMapper
         foreach (HolidaySchedule holidaySchedule in serviceAtLocation.holidayScheduleCollection)
         {
             string holidayScheduleId = $"{_adminAreaCode.Replace("E", "")}{holidaySchedule.id}";
-            foreach (var item in existingService.ServiceAtLocations.Select(x => x.HolidaySchedules))
+            if (existingService != null) 
             {
-                HolidayScheduleDto existing = item.FirstOrDefault(x => x.Id == holidayScheduleId);
-                if (existing != null)
+                foreach (var item in existingService.ServiceAtLocations.Select(x => x.HolidaySchedules))
                 {
-                    item.Remove(existing);
+                    HolidayScheduleDto existing = item.FirstOrDefault(x => x.Id == holidayScheduleId);
+                    if (existing != null)
+                    {
+                        item.Remove(existing);
+                    }
                 }
             }
-
+            
             bool.TryParse(holidaySchedule.closed, out bool closed);
 
             listHolidayScheduleDto.Add(new HolidayScheduleDto(id: holidayScheduleId, closed: closed, closesAt: GetDateFromString(holidaySchedule.closes_at), startDate: GetDateFromString(holidaySchedule.start_date), endDate: GetDateFromString(holidaySchedule.end_date), GetDateFromString(holidaySchedule.open_at)));
@@ -445,21 +495,20 @@ public class ElmbridgeMapper
         foreach (Service_At_Location serviceAtLocation in serviceAtLocations) 
         {
             string Id = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}";
-            if (existingService != null)
+            ServiceAtLocationDto serviceAtLocationDto = listServiceAtLocationDto.FirstOrDefault(x => x.Id == Id);
+            if (serviceAtLocationDto != null)
             {
-                ServiceAtLocationDto serviceAtLocationDto = existingService.ServiceAtLocations.FirstOrDefault(x => x.Id == Id);
-                if (serviceAtLocationDto != null)
-                {
-                    existingService.ServiceAtLocations.Remove(serviceAtLocationDto);
-                }
+                listServiceAtLocationDto.Remove(serviceAtLocationDto);
             }
+            
             List<RegularScheduleDto>  regularSchedules = GetServiceAtLocationRegularSchedules(serviceAtLocation, existingService);
             List<HolidayScheduleDto> holidaySchedules = GetServiceAtLocationHolidaySchedules(serviceAtLocation, existingService);
 
             List<PhysicalAddressDto> physicalAddressDtos = new List<PhysicalAddressDto>();
             foreach(var physicalAddress in serviceAtLocation.location.physical_addresses)
             {
-                string physicalAddressId = $"{_adminAreaCode.Replace("E", "")}{physicalAddress.address_1}{physicalAddress.postal_code}";
+                string physicalAddressId = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}{physicalAddress.address_1}{physicalAddress.postal_code}";
+                physicalAddressId = physicalAddressId.Replace(",", "").Trim();
                 physicalAddressId = physicalAddressId.Replace(" ", "-");
                 physicalAddressDtos.Add(new PhysicalAddressDto(id: physicalAddressId, address1: physicalAddress.address_1, city: physicalAddress.city, postCode: physicalAddress.postal_code, country: physicalAddress.country, stateProvince: physicalAddress.state_province));
 
@@ -491,63 +540,106 @@ public class ElmbridgeMapper
         foreach (var contact in contacts)
         {
             string contactId = $"{_adminAreaCode.Replace("E", "")}{contact.id}";
-            if (existingService != null) 
+            LinkContactDto existing = list.FirstOrDefault(x => x.Contact.Id == contactId);
+            if (existing != null)
             {
-                LinkContactDto existing = existingService.LinkContacts.FirstOrDefault(x => x.Contact.Id == contactId);
-                if (existing != null)
-                {
-                    list.Remove(existing);
-                }
+                list.Remove(existing);
             }
-
+           
             string phone = default!;
             if (contact != null && contact.phones != null && contact.phones.Any())
             {
                 phone = contact.phones.FirstOrDefault().number ?? string.Empty;
             }
 
-            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: null, 
+            if (string.IsNullOrEmpty(phone))
+            {
+                continue;
+            }
+
+            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact", 
                 contact: new ContactDto(id: contactId, title: contact.title,name: contact.name, telephone: phone, phone,url: null, email: null)));
-
-
         }
 
         return list;
     }
 
 
-    //private List<LinkContactDto> GetLinkContactDtos(string serviceId, IList<Contact> contacts, ServiceDto existingService)
-    //{
-    //    if (!contacts.Any())
-    //    {
-    //        return new List<LinkContactDto>();
-    //    }
+    private List<LanguageDto> GetLanguages(Language[] languages, ServiceDto existingService)
+    {
+        if (languages == null || !languages.Any())
+        {
+            return new List<LanguageDto>();
+        }
 
-    //    var list = new List<LinkContactDto>();
-    //    if (existingService != null) 
-    //    {
-    //        list = existingService.LinkContacts.ToList();
-    //    }
-    //    foreach (var contact in contacts)
-    //    {
-    //        if (string.IsNullOrEmpty(contact.Phone))
-    //        {
-    //            continue;
-    //        }
-    //        string contactId = $"{_adminAreaCode.Replace("E", "")}{contact.Id.ToString().ToString()}";
-    //        if (existingService != null)
-    //        {
-    //            var linkContact = existingService.LinkContacts.FirstOrDefault(x => x.Id == contactId);
-    //            if (linkContact != null)
-    //            {
-    //                //Will be replace by the one below
-    //                existingService.LinkContacts.Remove(linkContact);
-    //            }
-    //        }
+        List<LanguageDto> listLanguageDto = new List<LanguageDto>();
+        if (existingService != null)
+        {
+            listLanguageDto = existingService.Languages.ToList();
+        }
 
-    //        list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact", new ContactDto(id: contactId, title: contact.Title, name: contact.Name ?? "Contact", telephone: contact.Phone, textPhone: contact.Phone, url: null, email: contact.Email)));
-    //    }
+        foreach (Language language in languages)
+        {
+            string serviceAreaId = $"{_adminAreaCode.Replace("E", "")}{language.id}";
+            LanguageDto existing = listLanguageDto.FirstOrDefault(x => x.Id == serviceAreaId);
+            if (existing != null)
+            {
+                listLanguageDto.Remove(existing);
+            }
+            
+            listLanguageDto.Add(new LanguageDto(id: serviceAreaId, name: language.language));
+        }
 
-    //    return list;
-    //}
+        return listLanguageDto;
+    }
+
+    private List<ServiceTaxonomyDto> GetServiceTaxonomies(Service_Taxonomys[] serviceTaxonomies, ServiceDto existingService)
+    {
+        if (serviceTaxonomies == null || !serviceTaxonomies.Any())
+        {
+            return new List<ServiceTaxonomyDto>();
+        }
+
+        List<ServiceTaxonomyDto> listServiceTaxonomyDto = new List<ServiceTaxonomyDto>();
+        if (existingService != null)
+        {
+            listServiceTaxonomyDto = existingService.ServiceTaxonomies.ToList();
+        }
+
+        foreach (Service_Taxonomys serviceTaxonomy in serviceTaxonomies)
+        {
+            string serviceTaxonomyId = $"{_adminAreaCode.Replace("E", "")}{serviceTaxonomy.id}";
+
+            if (serviceTaxonomyId == "07000207MentalIllness")
+            {
+                System.Diagnostics.Debug.WriteLine("Got Here");
+            }
+
+            ServiceTaxonomyDto existing = listServiceTaxonomyDto.FirstOrDefault(x => x.Id == serviceTaxonomyId);
+            if (existing != null)
+            {
+                listServiceTaxonomyDto.Remove(existing);
+            }
+
+            string taxonomyId = $"{_adminAreaCode.Replace("E", "")}{serviceTaxonomy.taxonomy.id}";
+            TaxonomyDto taxonomyDto = new TaxonomyDto(id: taxonomyId, name: serviceTaxonomy.taxonomy.name, taxonomyType: TaxonomyType.ServiceCategory, parent: null);
+            if (!_dictTaxonomies.ContainsKey(taxonomyId))
+            {
+                var existingTaxonomy = _alltaxonomies.FirstOrDefault(x => x.Name.ToLower() == taxonomyDto.Name.ToLower());
+                if (existingTaxonomy != null) 
+                {
+                    taxonomyDto.Id = existingTaxonomy.Id;
+                }
+                else
+                {
+                    _organisationClientService.CreateTaxonomy(taxonomyDto);
+                    _dictTaxonomies[taxonomyId] = taxonomyDto;
+                }  
+            }
+
+            listServiceTaxonomyDto.Add(new ServiceTaxonomyDto(id: serviceTaxonomyId, taxonomy: taxonomyDto));
+        }
+
+        return listServiceTaxonomyDto;
+    }
 }
