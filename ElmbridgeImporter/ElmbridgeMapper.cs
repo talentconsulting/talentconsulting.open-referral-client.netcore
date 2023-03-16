@@ -15,7 +15,6 @@ public class ElmbridgeMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
-    private readonly Dictionary<string, ServiceTaxonomyDto> _dictServiceTaxonomies;
     private List<TaxonomyDto> _alltaxonomies;
     private readonly IElmbridgeClientService _elmbridgeClientService;
     private readonly IOrganisationClientService _organisationClientService;
@@ -27,7 +26,6 @@ public class ElmbridgeMapper
     {
         _elmbridgeClientService = elmbridgeClientService;
         _organisationClientService = organisationClientService;
-        _dictServiceTaxonomies = new Dictionary<string, ServiceTaxonomyDto>();
     }
 
     public async Task AddOrUpdateServices()
@@ -37,46 +35,154 @@ public class ElmbridgeMapper
         await CreateTaxonomyDictionary();
         ElmbridgeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(startPage);
         int totalPages = elmbridgeSimpleService.totalPages;
+      
+        await LoopSimpleServices(startPage, totalPages);
+
+        for (int i = startPage + 1; i <= totalPages;  i++) 
+        {
+            await LoopSimpleServices(i, totalPages);
+        }
+    }
+
+    private async Task LoopSimpleServices(int page, int totalPages)
+    {
+        int itemCount = -1;
         int errorCount = 0;
-        foreach (var item in elmbridgeSimpleService.content)
+        ElmbridgeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(page);
+        foreach (var itemId in elmbridgeSimpleService.content.Select(x => x.id))
         {
             try
             {
-                ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(item.id);
+                itemCount++;
+                ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(itemId);
                 errorCount += await AddAndUpdateService(elmbridgeService);
             }
             catch
             {
-                Console.WriteLine($"Failed to get service for id: {item.id}");
+                Console.WriteLine($"This is only a simple service id: {itemId}");
+                errorCount += await AddAndUpdateSimpleService(elmbridgeSimpleService.content[itemCount]);
             }
-            
         }
-        Console.WriteLine($"Completed Page {startPage} {totalPages} with {errorCount} errors"); 
-        for (int i = startPage + 1; i <= totalPages;  i++) 
+
+        Console.WriteLine($"Completed Page {page} of {totalPages} with {errorCount} errors");
+
+    }
+
+    private async Task<List<string>> AddOrUpdateDirectoryService(bool newOrganisation, OrganisationWithServicesDto serviceDirectoryOrganisation, ServiceDto newService, string serviceId, List<string> errors)
+    {
+        if (newOrganisation)
         {
-            errorCount = 0;
-            elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(i);
-            foreach (var item in elmbridgeSimpleService.content)
+            //Create Organisation
+            serviceDirectoryOrganisation.Services.Add(newService);
+
+            try
             {
-                try
-                {
-                    ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(item.id);
-                    errorCount += await AddAndUpdateService(elmbridgeService);
-                }
-                catch
-                {
-                    Console.WriteLine($"Failed to get service for id: {item.id}");
-                }
+                await _organisationClientService.CreateOrganisation(serviceDirectoryOrganisation);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Failed to Create Organisation with Service Id:{serviceId} {ex.Message}");
             }
 
-            Console.WriteLine($"Completed Page {i} of {totalPages} with {errorCount} errors");
         }
+        else
+        {
+
+            OrganisationWithServicesDto organisationWithServicesDto = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+            if (organisationWithServicesDto.Services == null)
+            {
+                organisationWithServicesDto.Services = new List<ServiceDto>();
+            }
+
+            organisationWithServicesDto.Services.Add(newService);
+
+            try
+            {
+                await _organisationClientService.UpdateOrganisation(organisationWithServicesDto);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Failed to Update Organisation with Service Id:{serviceId} {ex.Message}");
+            }
+        }
+
+        return errors;
+    }
+
+    private async Task<int> AddAndUpdateSimpleService(Content elmbridgeSimpleService)
+    {
+        List<string> errors = new List<string>();
+        string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeSimpleService.id}";
+        if (serviceId == "070002074162ccb4-41f0-4dd7-88fa-b4cc342586d5")
+        {
+            System.Diagnostics.Debug.WriteLine("Got Here");
+        }
+        OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
+
+        bool newOrganisation = false;
+        string organisationId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeSimpleService.organization.id}";
+        if (_dictOrganisations.ContainsKey(organisationId))
+        {
+            serviceDirectoryOrganisation = _dictOrganisations[organisationId];
+            //Get latest
+            serviceDirectoryOrganisation = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+        }
+        else
+        {
+            serviceDirectoryOrganisation = new OrganisationWithServicesDto(
+            id: organisationId,
+            organisationType: new OrganisationTypeDto("2", "VCFS", "Voluntary, Charitable, Faith Sector"),
+            name: elmbridgeSimpleService.organization.name,
+            description: elmbridgeSimpleService.organization.name,
+            logo: elmbridgeSimpleService.organization.logo,
+            uri: elmbridgeSimpleService.organization.uri,
+            url: elmbridgeSimpleService.organization.url,
+            services: new List<ServiceDto>(),
+            linkContacts: new List<LinkContactDto>());
+            serviceDirectoryOrganisation.AdminAreaCode = _adminAreaCode;
+
+            _dictOrganisations[organisationId] = serviceDirectoryOrganisation;
+
+            newOrganisation = true;
+        }
+
+        var builder = new ServicesDtoBuilder();
+
+        var newService = builder.WithMainProperties(
+            id: serviceId,
+            serviceType: new ServiceTypeDto("1", "Information Sharing", ""),
+            organisationId: serviceDirectoryOrganisation.Id,
+            name: elmbridgeSimpleService.name,
+            description: elmbridgeSimpleService.description,
+            accreditations: elmbridgeSimpleService.accreditations,
+            assuredDate: GetDateFromString(elmbridgeSimpleService.assured_date),
+            attendingAccess: elmbridgeSimpleService.attending_access,
+            attendingType: elmbridgeSimpleService.attending_type,
+            deliverableType: elmbridgeSimpleService.deliverable_type,
+            status: elmbridgeSimpleService.status,
+            fees: elmbridgeSimpleService.fees,
+            canFamilyChooseDeliveryLocation: false)
+            .Build();
+
+        errors = await AddOrUpdateDirectoryService(newOrganisation, serviceDirectoryOrganisation, newService, serviceId, errors);
+
+        foreach (string error in errors)
+        {
+            Console.WriteLine(error);
+        }
+
+        return errors.Count;
+
     }
 
     private async Task<int> AddAndUpdateService(ElmbridgeService elmbridgeService)
     {
         List<string> errors = new List<string>();
         string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeService.id}";
+        if (serviceId == "070002074162ccb4-41f0-4dd7-88fa-b4cc342586d5")
+        {
+            System.Diagnostics.Debug.WriteLine("Got Here");
+        }
         OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
         bool newOrganisation = false;
@@ -141,41 +247,7 @@ public class ElmbridgeMapper
             System.Diagnostics.Debug.WriteLine("Got Here");
         }
 
-        if (newOrganisation)
-        {
-            //Create Organisation
-            serviceDirectoryOrganisation.Services.Add(newService);
-
-            try
-            {
-                await _organisationClientService.CreateOrganisation(serviceDirectoryOrganisation);
-            }
-            catch (Exception ex)
-            {
-                errors.Add($"Failed to Create Organisation with Service Id:{serviceId} {ex.Message}");
-            }
-
-        }
-        else
-        {
-
-            OrganisationWithServicesDto organisationWithServicesDto = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
-            if (organisationWithServicesDto.Services == null)
-            {
-                organisationWithServicesDto.Services = new List<ServiceDto>();
-            }
-
-            organisationWithServicesDto.Services.Add(newService);
-
-            try
-            {
-                await _organisationClientService.UpdateOrganisation(organisationWithServicesDto);
-            }
-            catch (Exception ex)
-            {
-                errors.Add($"Failed to Update Organisation with Service Id:{serviceId} {ex.Message}");
-            }
-        }
+        errors = await AddOrUpdateDirectoryService(newOrganisation, serviceDirectoryOrganisation, newService, serviceId, errors);
 
         foreach (string error in errors) 
         {
