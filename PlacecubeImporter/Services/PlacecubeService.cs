@@ -1,6 +1,6 @@
 ﻿namespace ElmbridgeImporter.Services
 {
-    public class ElmbridgeService
+    public class PlacecubeService
     {
         public string id { get; set; }
         public string name { get; set; }

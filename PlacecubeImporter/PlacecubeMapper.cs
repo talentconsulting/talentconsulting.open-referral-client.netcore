@@ -11,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace ElmbridgeImporter;
 
-public class ElmbridgeMapper
+public class PlacecubeMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
     private List<TaxonomyDto> _alltaxonomies;
-    private readonly IElmbridgeClientService _elmbridgeClientService;
+    private readonly IPlacecubeClientService _elmbridgeClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly string _adminAreaCode;
  
     public string Name => "Elmbridge Mapper";
 
-    public ElmbridgeMapper(IElmbridgeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
+    public PlacecubeMapper(IPlacecubeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
     {
         _elmbridgeClientService = elmbridgeClientService;
         _organisationClientService = organisationClientService;
@@ -34,7 +34,7 @@ public class ElmbridgeMapper
         const int startPage = 1;
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
-        ElmbridgeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(startPage);
+        PlacecubeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(startPage);
         int totalPages = elmbridgeSimpleService.totalPages;
       
         await LoopSimpleServices(startPage, totalPages);
@@ -49,13 +49,13 @@ public class ElmbridgeMapper
     {
         int itemCount = -1;
         int errorCount = 0;
-        ElmbridgeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(page);
+        PlacecubeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(page);
         foreach (var itemId in elmbridgeSimpleService.content.Select(x => x.id))
         {
             try
             {
                 itemCount++;
-                ElmbridgeService elmbridgeService = await _elmbridgeClientService.GetServiceById(itemId);
+                PlacecubeService elmbridgeService = await _elmbridgeClientService.GetServiceById(itemId);
                 errorCount += await AddAndUpdateService(elmbridgeService);
             }
             catch
@@ -176,7 +176,7 @@ public class ElmbridgeMapper
 
     }
 
-    private async Task<int> AddAndUpdateService(ElmbridgeService elmbridgeService)
+    private async Task<int> AddAndUpdateService(PlacecubeService elmbridgeService)
     {
         List<string> errors = new List<string>();
         string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeService.id}";

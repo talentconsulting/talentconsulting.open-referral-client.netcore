@@ -1,6 +1,6 @@
 ﻿namespace ElmbridgeImporter.Services
 {
-    public class ElmbridgeSimpleService
+    public class PlacecubeSimpleService
     {
         public int totalElements { get; set; }
         public int totalPages { get; set; }
