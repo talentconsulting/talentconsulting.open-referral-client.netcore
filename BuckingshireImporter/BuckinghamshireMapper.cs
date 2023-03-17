@@ -59,12 +59,6 @@ public class BuckinghamshireMapper
             string serviceId = $"{_adminAreaCode.Replace("E", "")}{service.Id.ToString()}";
             OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
-            //string[] ids = { "060000609932" };
-            //if (ids.Contains(serviceId))
-            //{
-            //    System.Diagnostics.Debug.WriteLine("Got Here");
-            //}
-
             bool newOrganisation = false;
             string organisationId = $"{_adminAreaCode.Replace("E", "")}{service.Organisation.Id.ToString()}";
             if (_dictOrganisations.ContainsKey(organisationId))
