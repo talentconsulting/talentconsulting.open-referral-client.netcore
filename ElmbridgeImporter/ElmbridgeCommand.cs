@@ -11,22 +11,43 @@ namespace ElmbridgeImporter
     public class ElmbridgeCommand : ICommand
     {
         public string Name { get => "DataImporter"; }
-        public string Description { get => "Imports Elmbridge Data."; }
+        public string Description { get => "Imports Placecube Data."; }
 
         public async Task<int> Execute(string arg)
         {
-            Console.WriteLine("Starting Elmbridge Mapper");
+            Console.WriteLine("Starting Pennine Lancashire Mapper");
 #pragma warning disable S1075 // URIs should not be hardcoded
-            //IOpenReferralClient openReferralClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
-            //IOpenReferralClient openReferralByServiceIdClient = new OpenReferralClient(new Uri("https://elmbridge.openplace.directory/o/ServiceDirectoryService/"), "v2");
-            IElmbridgeClientService elmbridgeClientService = new ElmbridgeClientService("https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2");
+            IElmbridgeClientService elmbridgeClientService = new ElmbridgeClientService("https://penninelancs.openplace.directory/o/ServiceDirectoryService/v2");
             IOrganisationClientService organisationClientService = new OrganisationClientService(arg);
 
 
-            ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(elmbridgeClientService, organisationClientService);
+            ElmbridgeMapper elmbridgeMapper = new ElmbridgeMapper(elmbridgeClientService, organisationClientService, "E10000017");
 #pragma warning restore S1075 // URIs should not be hardcoded
             await elmbridgeMapper.AddOrUpdateServices();
-            Console.WriteLine("Finished Elmbridge Mapper");
+            Console.WriteLine("Finished Pennine Lancashire Mapper");
+
+//            Console.WriteLine("Starting Noth Lincs Mapper");
+//#pragma warning disable S1075 // URIs should not be hardcoded
+//            elmbridgeClientService = new ElmbridgeClientService("https://northlincs.openplace.directory/o/ServiceDirectoryService/v2");
+//            organisationClientService = new OrganisationClientService(arg);
+
+
+//            elmbridgeMapper = new ElmbridgeMapper(elmbridgeClientService, organisationClientService, "E06000013");
+//#pragma warning restore S1075 // URIs should not be hardcoded
+//            await elmbridgeMapper.AddOrUpdateServices();
+//            Console.WriteLine("Finished Noth Lincs Mapper");
+
+
+            //            Console.WriteLine("Starting Elmbridge Mapper");
+            //#pragma warning disable S1075 // URIs should not be hardcoded
+            //            elmbridgeClientService = new ElmbridgeClientService("https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2");
+            //            organisationClientService = new OrganisationClientService(arg);
+
+
+            //            elmbridgeMapper = new ElmbridgeMapper(elmbridgeClientService, organisationClientService, "E10000030");
+            //#pragma warning restore S1075 // URIs should not be hardcoded
+            //            await elmbridgeMapper.AddOrUpdateServices();
+            //            Console.WriteLine("Finished Elmbridge Mapper");
             return 0;
         }
     }

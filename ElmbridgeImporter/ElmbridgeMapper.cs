@@ -18,14 +18,15 @@ public class ElmbridgeMapper
     private List<TaxonomyDto> _alltaxonomies;
     private readonly IElmbridgeClientService _elmbridgeClientService;
     private readonly IOrganisationClientService _organisationClientService;
-    private const string _adminAreaCode = "E07000207";
+    private readonly string _adminAreaCode;
  
     public string Name => "Elmbridge Mapper";
 
-    public ElmbridgeMapper(IElmbridgeClientService elmbridgeClientService, IOrganisationClientService organisationClientService)
+    public ElmbridgeMapper(IElmbridgeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
     {
         _elmbridgeClientService = elmbridgeClientService;
         _organisationClientService = organisationClientService;
+        _adminAreaCode = adminAreaCode;
     }
 
     public async Task AddOrUpdateServices()
