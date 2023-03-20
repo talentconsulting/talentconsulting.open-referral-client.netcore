@@ -45,7 +45,7 @@ namespace AppWithPlugin
                 string[] pluginPaths = new string[]
                 {
                     @"BuckingshireImporter\bin\Debug\net7.0\BuckingshireImporter.dll",
-                    "PlacecubeImporter\bin\Debug\net7.0\PlacecubeImporter.dll",
+                    @"PlacecubeImporter\bin\Debug\net7.0\PlacecubeImporter.dll",
                     @"PublicPartnershipImporter\bin\Debug\net7.0\PublicPartnershipImporter.dll",
                     
                 };
