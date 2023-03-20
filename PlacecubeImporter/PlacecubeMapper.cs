@@ -416,14 +416,14 @@ public class PlacecubeMapper
 
         foreach (Funding funding in fundings)
         {
-            string fundingId = $"{_adminAreaCode.Replace("E", "")}{funding.id}";
-            FundingDto existing = listFundingDto.FirstOrDefault(x => x.Id == fundingId);
+            //string fundingId = $"{_adminAreaCode.Replace("E", "")}{funding.id}";
+            FundingDto existing = listFundingDto.FirstOrDefault(x => x.Id == funding.id);
             if (existing != null)
             {
                 listFundingDto.Remove(existing);
             }
             
-            listFundingDto.Add(new FundingDto(id: fundingId, funding.source));
+            listFundingDto.Add(new FundingDto(id: funding.id, funding.source));
         }
 
         return listFundingDto;
