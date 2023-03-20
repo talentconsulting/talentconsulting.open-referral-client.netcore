@@ -1,72 +1,78 @@
-﻿using ElmbridgeImporter.Services;
-using FamilyHubs.ServiceDirectory.Shared.Builders;
+﻿using FamilyHubs.ServiceDirectory.Shared.Builders;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using Pipelines.Sockets.Unofficial.Arenas;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using PublicPartnershipImporter.Service;
 using ServiceDirectory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ElmbridgeImporter;
+namespace PublicPartnershipImporter;
 
-public class PlacecubeMapper
+public class PublicPartnershipMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
     private List<TaxonomyDto> _alltaxonomies;
-    private readonly IPlacecubeClientService _elmbridgeClientService;
+    private readonly IPublicPartnershipClientService _publicPartnershipClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly string _adminAreaCode;
- 
-    public string Name => "Elmbridge Mapper";
 
-    public PlacecubeMapper(IPlacecubeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
+    public string Name => "PublicPartnership Mapper";
+
+    public PublicPartnershipMapper(IPublicPartnershipClientService publicPartnershipClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
     {
-        _elmbridgeClientService = elmbridgeClientService;
+        _publicPartnershipClientService = publicPartnershipClientService;
         _organisationClientService = organisationClientService;
         _adminAreaCode = adminAreaCode;
+    }
+
+    private async Task<OrganisationWithServicesDto> InitialiseHullCouncil()
+    {
+#pragma warning disable S1075 // URIs should not be hardcoded
+        var elmbridgeCouncil = new OrganisationWithServicesDto(
+        "b1019f49-1dc3-4ef2-8d47-1e6363b87123",
+            new OrganisationTypeDto("1", "LA", "Local Authority"), "Hull City Council", "Hull City Council", null, new Uri("https://www.hull.gov.uk/").ToString(), "https://www.hull.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
+
+        elmbridgeCouncil.AdminAreaCode = _adminAreaCode;
+
+        await _organisationClientService.CreateOrganisation(elmbridgeCouncil);
+
+        return elmbridgeCouncil;
+#pragma warning restore S1075 // URIs should not be hardcoded
     }
 
     public async Task AddOrUpdateServices()
     {
         const int startPage = 1;
+        int errorCount = 0;
         await CreateOrganisationDictionary();
         await CreateTaxonomyDictionary();
-        PlacecubeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(startPage);
-        int totalPages = elmbridgeSimpleService.totalPages;
-      
-        await LoopSimpleServices(startPage, totalPages);
-
-        for (int i = startPage + 1; i <= totalPages;  i++) 
+        
+        PublicPartnershipSimpleService publicpartnershipSimpleService = await _publicPartnershipClientService.GetServicesByPage(startPage);
+        int totalPages = publicpartnershipSimpleService.totalpages;
+        foreach (Content content in publicpartnershipSimpleService.content)
         {
-            await LoopSimpleServices(i, totalPages);
-        }
-    }
-
-    private async Task LoopSimpleServices(int page, int totalPages)
-    {
-        int itemCount = -1;
-        int errorCount = 0;
-        PlacecubeSimpleService elmbridgeSimpleService = await _elmbridgeClientService.GetServicesByPage(page);
-        foreach (var itemId in elmbridgeSimpleService.content.Select(x => x.id))
-        {
-            try
-            {
-                itemCount++;
-                PlacecubeService elmbridgeService = await _elmbridgeClientService.GetServiceById(itemId);
-                errorCount += await AddAndUpdateService(elmbridgeService);
-            }
-            catch
-            {
-                Console.WriteLine($"This is only a simple service id: {itemId}");
-                errorCount += await AddAndUpdateSimpleService(elmbridgeSimpleService.content[itemCount]);
-            }
+            errorCount += await AddAndUpdateService(content);
         }
 
-        Console.WriteLine($"Completed Page {page} of {totalPages} with {errorCount} errors");
+        Console.WriteLine($"Completed Page {startPage} of {totalPages} with {errorCount} errors");
 
+        for (int i = startPage + 1; i <= totalPages; i++)
+        {
+            publicpartnershipSimpleService = await _publicPartnershipClientService.GetServicesByPage(i);
+
+            foreach (Content content in publicpartnershipSimpleService.content)
+            {
+                errorCount += await AddAndUpdateService(content);
+            }
+
+            Console.WriteLine($"Completed Page {i} of {totalPages} with {errorCount} errors");
+        }
+        
+        
     }
 
     private async Task<List<string>> AddOrUpdateDirectoryService(bool newOrganisation, OrganisationWithServicesDto serviceDirectoryOrganisation, ServiceDto newService, string serviceId, List<string> errors)
@@ -110,14 +116,15 @@ public class PlacecubeMapper
         return errors;
     }
 
-    private async Task<int> AddAndUpdateSimpleService(Content elmbridgeSimpleService)
+
+    private async Task<int> AddAndUpdateService(Content content)
     {
         List<string> errors = new List<string>();
-        string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeSimpleService.id}";
+        string serviceId = $"{_adminAreaCode.Replace("E", "")}{content.id}";
         OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
         bool newOrganisation = false;
-        string organisationId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeSimpleService.organization.id}";
+        string organisationId = $"{_adminAreaCode.Replace("E", "")}{content.organization.id}";
         if (_dictOrganisations.ContainsKey(organisationId))
         {
             serviceDirectoryOrganisation = _dictOrganisations[organisationId];
@@ -129,73 +136,11 @@ public class PlacecubeMapper
             serviceDirectoryOrganisation = new OrganisationWithServicesDto(
             id: organisationId,
             organisationType: new OrganisationTypeDto("2", "VCFS", "Voluntary, Charitable, Faith Sector"),
-            name: elmbridgeSimpleService.organization.name,
-            description: elmbridgeSimpleService.organization.name,
-            logo: elmbridgeSimpleService.organization.logo,
-            uri: elmbridgeSimpleService.organization.uri,
-            url: elmbridgeSimpleService.organization.url,
-            services: new List<ServiceDto>(),
-            linkContacts: new List<LinkContactDto>());
-            serviceDirectoryOrganisation.AdminAreaCode = _adminAreaCode;
-
-            _dictOrganisations[organisationId] = serviceDirectoryOrganisation;
-
-            newOrganisation = true;
-        }
-
-        var builder = new ServicesDtoBuilder();
-
-        var newService = builder.WithMainProperties(
-            id: serviceId,
-            serviceType: new ServiceTypeDto("1", "Information Sharing", ""),
-            organisationId: serviceDirectoryOrganisation.Id,
-            name: elmbridgeSimpleService.name,
-            description: elmbridgeSimpleService.description,
-            accreditations: elmbridgeSimpleService.accreditations,
-            assuredDate: GetDateFromString(elmbridgeSimpleService.assured_date),
-            attendingAccess: elmbridgeSimpleService.attending_access,
-            attendingType: elmbridgeSimpleService.attending_type,
-            deliverableType: elmbridgeSimpleService.deliverable_type,
-            status: elmbridgeSimpleService.status,
-            fees: elmbridgeSimpleService.fees,
-            canFamilyChooseDeliveryLocation: false)
-            .Build();
-
-        errors = await AddOrUpdateDirectoryService(newOrganisation, serviceDirectoryOrganisation, newService, serviceId, errors);
-
-        foreach (string error in errors)
-        {
-            Console.WriteLine(error);
-        }
-
-        return errors.Count;
-
-    }
-
-    private async Task<int> AddAndUpdateService(PlacecubeService elmbridgeService)
-    {
-        List<string> errors = new List<string>();
-        string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeService.id}";
-        OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
-
-        bool newOrganisation = false;
-        string organisationId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeService.organization.id}";
-        if (_dictOrganisations.ContainsKey(organisationId))
-        {
-            serviceDirectoryOrganisation = _dictOrganisations[organisationId];
-            //Get latest
-            serviceDirectoryOrganisation = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
-        }
-        else
-        {
-            serviceDirectoryOrganisation = new OrganisationWithServicesDto(
-            id: organisationId,
-            organisationType: new OrganisationTypeDto("2", "VCFS", "Voluntary, Charitable, Faith Sector"),
-            name: elmbridgeService.organization.name,
-            description: elmbridgeService.organization.name,
-            logo: elmbridgeService.organization.logo,
-            uri: elmbridgeService.organization.uri,
-            url: elmbridgeService.organization.url,
+            name: content.organization.name,
+            description: content.organization.name,
+            logo: content.organization.logo,
+            uri: content.organization.uri,
+            url: content.organization.url,
             services: new List<ServiceDto>(),
             linkContacts: new List<LinkContactDto>());
             serviceDirectoryOrganisation.AdminAreaCode = _adminAreaCode;
@@ -213,105 +158,36 @@ public class PlacecubeMapper
             id: serviceId,
             serviceType: new ServiceTypeDto("1", "Information Sharing", ""),
             organisationId: serviceDirectoryOrganisation.Id,
-            name: elmbridgeService.name,
-            description: elmbridgeService.description,
-            accreditations: elmbridgeService.accreditations,
-            assuredDate: GetDateFromString(elmbridgeService.assured_date),
-            attendingAccess: elmbridgeService.attending_access,
-            attendingType: elmbridgeService.attending_type,
-            deliverableType: elmbridgeService.deliverable_type,
-            status: elmbridgeService.status,
-            fees: elmbridgeService.fees,
+            name: content.name,
+            description: content.description,
+            accreditations: null, //content.accreditations,
+            assuredDate: GetDateFromString(content.assured_date),
+            attendingAccess: null, //content.attending_access,
+            attendingType: null, //content.attending_type,
+            deliverableType: content.deliverable_type,
+            status: content.status,
+            fees: content.fees,
             canFamilyChooseDeliveryLocation: false)
-            .WithEligibility(GetEligibilityDtos(elmbridgeService.eligibilitys, existingService))
-            .WithCostOption(GetCostOptionDtos(serviceId, elmbridgeService.cost_options, existingService))
-            .WithServiceAreas(GetServiceAreas(elmbridgeService.service_areas, existingService))
-            .WithFundings(GetFundings(elmbridgeService.fundings, existingService))
-            .WithRegularSchedules(GetRegularSchedules(elmbridgeService.regular_schedules, existingService))
-            .WithHolidaySchedules(GetHolidaySchedules(elmbridgeService.holiday_schedules, existingService))
-            .WithLinkContact(GetLinkContactDtos(serviceId, elmbridgeService.contacts, existingService))
-            .WithServiceAtLocations(GetServiceAtLocations(elmbridgeService.service_at_locations, existingService))
-            .WithLanguages(GetLanguages(elmbridgeService.languages, existingService))
-            .WithServiceTaxonomies(GetServiceTaxonomies(elmbridgeService.service_taxonomys, existingService))
+            .WithEligibility(GetEligibilityDtos(content.eligibilitys, existingService))
+            .WithCostOption(GetCostOptionDtos(serviceId, content.cost_options, existingService))
+            .WithServiceAreas(GetServiceAreas(content.service_areas, existingService))
+            .WithFundings(GetFundings(content.fundings, existingService))
+            .WithRegularSchedules(GetRegularSchedules(content.regular_schedules, existingService))
+            .WithHolidaySchedules(GetHolidaySchedules(content.holiday_schedules, existingService))
+            .WithLinkContact(GetLinkContactDtos(serviceId, content.contacts, existingService))
+            .WithServiceAtLocations(GetServiceAtLocations(content.service_at_locations, existingService))
+            .WithLanguages(GetLanguages(content.languages, existingService))
+            .WithServiceTaxonomies(GetServiceTaxonomies(content.service_taxonomys, existingService))
             .Build();
 
         errors = await AddOrUpdateDirectoryService(newOrganisation, serviceDirectoryOrganisation, newService, serviceId, errors);
 
-        foreach (string error in errors) 
+        foreach (string error in errors)
         {
             Console.WriteLine(error);
         }
 
         return errors.Count;
-    }
-
-    private DateTime? GetDateFromString(string strDate)
-    {
-        if (string.IsNullOrEmpty(strDate))
-            return null;
-
-        if (DateTime.TryParse(strDate, out DateTime date))
-        {
-            return DateTime.SpecifyKind(date, DateTimeKind.Utc);
-        }
-
-        return null;
-    }
-
-    private async Task<OrganisationWithServicesDto> InitialiseElmbridgeCouncil()
-    {
-#pragma warning disable S1075 // URIs should not be hardcoded
-        var elmbridgeCouncil = new OrganisationWithServicesDto(
-        "ddafc1ea-089c-40ba-9b41-b1a8739fb628",
-            new OrganisationTypeDto("1", "LA", "Local Authority"), "Elmbridge Council", "Elmbridge Council", null, new Uri("https://www.elmbridge.gov.uk/").ToString(), "https://www.elmbridge.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
-
-        elmbridgeCouncil.AdminAreaCode = _adminAreaCode;
-
-        await _organisationClientService.CreateOrganisation(elmbridgeCouncil);
-
-        return elmbridgeCouncil;
-#pragma warning restore S1075 // URIs should not be hardcoded
-    }
-
-    private async Task CreateOrganisationDictionary()
-    {
-        _dictOrganisations = new Dictionary<string, OrganisationWithServicesDto>();
-        List<OrganisationDto> organisations = await _organisationClientService.GetListOrganisations();
-        var elmbridge = organisations.FirstOrDefault(x => x.Name.Contains("Elmbridge"));
-        if (elmbridge == null) 
-        {
-            var buckCouncil = await InitialiseElmbridgeCouncil();
-            _dictOrganisations[buckCouncil.Id] = buckCouncil;
-        }
-        
-        foreach (var organisation in organisations)
-        {
-            OrganisationWithServicesDto organisationWithServicesDto = new OrganisationWithServicesDto(
-                id: organisation.Id,
-                organisationType: organisation.OrganisationType,
-                name: organisation.Name,
-                description: organisation.Description,
-                logo: organisation.Logo,
-                uri: organisation.Uri,
-                url: organisation.Url,
-                services: new List<ServiceDto>(),
-                linkContacts: new List<LinkContactDto>());
-
-            organisationWithServicesDto.AdminAreaCode = _adminAreaCode;
-
-            _dictOrganisations[organisation.Id] = organisationWithServicesDto;
-        }
-    }
-
-    private async Task CreateTaxonomyDictionary()
-    {
-        _dictTaxonomies = new Dictionary<string, TaxonomyDto>();
-        var allTaxonomies = await _organisationClientService.GetTaxonomyList(1, 9999);
-        _alltaxonomies = allTaxonomies.Items;
-        foreach (var taxonomy in allTaxonomies.Items)
-        {
-            _dictTaxonomies[taxonomy.Id] = taxonomy;
-        }
     }
 
     private List<EligibilityDto> GetEligibilityDtos(Eligibility[] eligibilities, ServiceDto existingService)
@@ -325,15 +201,21 @@ public class PlacecubeMapper
 
         foreach (Eligibility eligibility in eligibilities)
         {
+            if (eligibility.minimum_age == "null" && eligibility.minimum_age == null)
+                continue;
+
             string eligibilityId = $"{_adminAreaCode.Replace("E", "")}{eligibility.id}";
-            
+
             EligibilityDto existing = listEligibilityDto.FirstOrDefault(x => x.Id == eligibility.id);
             if (existing != null)
             {
                 listEligibilityDto.Remove(existing);
             }
-            
-            listEligibilityDto.Add(new EligibilityDto(id: eligibilityId, eligibilityDescription: eligibility.eligibility, maximumAge: eligibility.maximum_age, minimumAge: eligibility.minimum_age) );
+
+            int.TryParse(eligibility.maximum_age, out int maxAge);
+            int.TryParse(eligibility.minimum_age, out int minAge);
+
+            listEligibilityDto.Add(new EligibilityDto(id: eligibilityId, eligibilityDescription: eligibility.eligibility, maximumAge: maxAge, minimumAge: minAge));
         }
 
         return listEligibilityDto;
@@ -342,7 +224,7 @@ public class PlacecubeMapper
     private List<CostOptionDto> GetCostOptionDtos(string serviceId, CostOptions[] costOptions, ServiceDto existingService)
     {
         if (costOptions == null || !costOptions.Any())
-        { 
+        {
             return new List<CostOptionDto>();
         }
 
@@ -358,20 +240,20 @@ public class PlacecubeMapper
                 continue;
 
             string costOptionId = $"{_adminAreaCode.Replace("E", "")}{costOption.id}";
-            
+
             CostOptionDto existing = listCostOptionDto.FirstOrDefault(x => x.Id == costOptionId);
             if (existing != null)
             {
                 listCostOptionDto.Remove(existing);
             }
-            
+
             listCostOptionDto.Add(new CostOptionDto(id: costOptionId, amountDescription: costOption.amount_description, amount: costOption.amount, linkId: serviceId, option: costOption.option, validFrom: GetDateFromString(costOption.valid_from), validTo: GetDateFromString(costOption.valid_to)));
         }
 
         return listCostOptionDto;
     }
 
-    private List<ServiceAreaDto> GetServiceAreas(ServiceArea[] serviceAreas, ServiceDto existingService)
+    private List<ServiceAreaDto> GetServiceAreas(ServiceAreas[] serviceAreas, ServiceDto existingService)
     {
         if (serviceAreas == null || !serviceAreas.Any())
         {
@@ -384,16 +266,16 @@ public class PlacecubeMapper
             listServiceAreaDto = existingService.ServiceAreas.ToList();
         }
 
-        foreach (ServiceArea serviceArea in serviceAreas)
+        foreach (ServiceAreas serviceArea in serviceAreas)
         {
             string serviceAreaId = $"{_adminAreaCode.Replace("E", "")}{serviceArea.id}";
-            
+
             ServiceAreaDto existing = listServiceAreaDto.FirstOrDefault(x => x.Id == serviceAreaId);
             if (existing != null)
             {
                 listServiceAreaDto.Remove(existing);
             }
-            
+
             listServiceAreaDto.Add(new ServiceAreaDto(id: serviceAreaId, serviceAreaDescription: serviceArea.service_area, extent: serviceArea.extent, uri: null));
         }
 
@@ -416,14 +298,14 @@ public class PlacecubeMapper
 
         foreach (Funding funding in fundings)
         {
-            string fundingId = $"{_adminAreaCode.Replace("E", "")}{funding.id}";
-            FundingDto existing = listFundingDto.FirstOrDefault(x => x.Id == fundingId);
+            //string fundingId = $"{_adminAreaCode.Replace("E", "")}{funding.id}";
+            FundingDto existing = listFundingDto.FirstOrDefault(x => x.Id == funding.id);
             if (existing != null)
             {
                 listFundingDto.Remove(existing);
             }
-            
-            listFundingDto.Add(new FundingDto(id: fundingId, funding.source));
+
+            listFundingDto.Add(new FundingDto(id: funding.id, funding.source));
         }
 
         return listFundingDto;
@@ -451,7 +333,7 @@ public class PlacecubeMapper
             {
                 listRegularScheduleDto.Remove(existing);
             }
-            
+
             listRegularScheduleDto.Add(new RegularScheduleDto(id: regularScheduleId, description: regularSchedule.description, opensAt: GetDateFromString(regularSchedule.opens_at), closesAt: GetDateFromString(regularSchedule.closes_at), byDay: regularSchedule.byday, byMonthDay: regularSchedule.bymonthday, dtStart: regularSchedule.dtstart, freq: regularSchedule.freq, interval: regularSchedule.interval, validFrom: GetDateFromString(regularSchedule.valid_from), GetDateFromString(regularSchedule.valid_to)));
         }
 
@@ -488,58 +370,66 @@ public class PlacecubeMapper
         return listHolidayScheduleDto;
     }
 
-    private List<RegularScheduleDto> GetServiceAtLocationRegularSchedules(ServiceAtLocation serviceAtLocation, ServiceDto existingService)
+    private List<RegularScheduleDto> GetServiceAtLocationRegularSchedules(ServiceAtLocations serviceAtLocation, ServiceDto existingService)
     {
         List<RegularScheduleDto> listRegularScheduleDto = new List<RegularScheduleDto>();
-        foreach (RegularSchedule regularSchedule in serviceAtLocation.regular_schedule)
+        if (serviceAtLocation.regular_schedule != null)
         {
-            string regularScheduleId = $"{_adminAreaCode.Replace("E", "")}{regularSchedule.id}";
-            if (existingService != null) 
+            foreach (RegularSchedule regularSchedule in serviceAtLocation.regular_schedule)
             {
-                foreach (var item in existingService.ServiceAtLocations.Select(x => x.RegularSchedules))
+                string regularScheduleId = $"{_adminAreaCode.Replace("E", "")}{regularSchedule.id}";
+                if (existingService != null)
                 {
-                    RegularScheduleDto existing = item.FirstOrDefault(x => x.Id == regularScheduleId);
-                    if (existing != null)
+                    foreach (var item in existingService.ServiceAtLocations.Select(x => x.RegularSchedules))
                     {
-                        item.Remove(existing);
+                        RegularScheduleDto existing = item.FirstOrDefault(x => x.Id == regularScheduleId);
+                        if (existing != null)
+                        {
+                            item.Remove(existing);
+                        }
                     }
                 }
-            }
-            
 
-            listRegularScheduleDto.Add(new RegularScheduleDto(id: regularScheduleId, description: regularSchedule.description, opensAt: GetDateFromString(regularSchedule.opens_at), closesAt: GetDateFromString(regularSchedule.closes_at), byDay: regularSchedule.byday, byMonthDay: regularSchedule.bymonthday, dtStart: regularSchedule.dtstart, freq: regularSchedule.freq, interval: regularSchedule.interval, validFrom: GetDateFromString(regularSchedule.valid_from), GetDateFromString(regularSchedule.valid_to)));
+
+                listRegularScheduleDto.Add(new RegularScheduleDto(id: regularScheduleId, description: regularSchedule.description, opensAt: GetDateFromString(regularSchedule.opens_at), closesAt: GetDateFromString(regularSchedule.closes_at), byDay: regularSchedule.byday, byMonthDay: regularSchedule.bymonthday, dtStart: regularSchedule.dtstart, freq: regularSchedule.freq, interval: regularSchedule.interval, validFrom: GetDateFromString(regularSchedule.valid_from), GetDateFromString(regularSchedule.valid_to)));
+            }
         }
+        
 
         return listRegularScheduleDto;
     }
 
-    private List<HolidayScheduleDto> GetServiceAtLocationHolidaySchedules(ServiceAtLocation serviceAtLocation, ServiceDto existingService)
+    private List<HolidayScheduleDto> GetServiceAtLocationHolidaySchedules(ServiceAtLocations serviceAtLocation, ServiceDto existingService)
     {
         List<HolidayScheduleDto> listHolidayScheduleDto = new List<HolidayScheduleDto>();
-        foreach (HolidaySchedule holidaySchedule in serviceAtLocation.holidayScheduleCollection)
+        if (serviceAtLocation.holiday_schedules != null) 
         {
-            string holidayScheduleId = $"{_adminAreaCode.Replace("E", "")}{holidaySchedule.id}";
-            if (existingService != null) 
+            foreach (HolidaySchedule holidaySchedule in serviceAtLocation.holiday_schedules)
             {
-                foreach (var item in existingService.ServiceAtLocations.Select(x => x.HolidaySchedules))
+                string holidayScheduleId = $"{_adminAreaCode.Replace("E", "")}{holidaySchedule.id}";
+                if (existingService != null)
                 {
-                    HolidayScheduleDto existing = item.FirstOrDefault(x => x.Id == holidayScheduleId);
-                    if (existing != null)
+                    foreach (var item in existingService.ServiceAtLocations.Select(x => x.HolidaySchedules))
                     {
-                        item.Remove(existing);
+                        HolidayScheduleDto existing = item.FirstOrDefault(x => x.Id == holidayScheduleId);
+                        if (existing != null)
+                        {
+                            item.Remove(existing);
+                        }
                     }
                 }
-            }
-            
-            bool.TryParse(holidaySchedule.closed, out bool closed);
 
-            listHolidayScheduleDto.Add(new HolidayScheduleDto(id: holidayScheduleId, closed: closed, closesAt: GetDateFromString(holidaySchedule.closes_at), startDate: GetDateFromString(holidaySchedule.start_date), endDate: GetDateFromString(holidaySchedule.end_date), GetDateFromString(holidaySchedule.open_at)));
+                bool.TryParse(holidaySchedule.closed, out bool closed);
+
+                listHolidayScheduleDto.Add(new HolidayScheduleDto(id: holidayScheduleId, closed: closed, closesAt: GetDateFromString(holidaySchedule.closes_at), startDate: GetDateFromString(holidaySchedule.start_date), endDate: GetDateFromString(holidaySchedule.end_date), GetDateFromString(holidaySchedule.open_at)));
+            }
         }
+        
 
         return listHolidayScheduleDto;
     }
 
-    private List<ServiceAtLocationDto> GetServiceAtLocations(ServiceAtLocation[] serviceAtLocations, ServiceDto existingService)
+    private List<ServiceAtLocationDto> GetServiceAtLocations(ServiceAtLocations[] serviceAtLocations, ServiceDto existingService)
     {
         if (serviceAtLocations == null || !serviceAtLocations.Any())
         {
@@ -552,7 +442,7 @@ public class PlacecubeMapper
             listServiceAtLocationDto = existingService.ServiceAtLocations.ToList();
         }
 
-        foreach (ServiceAtLocation serviceAtLocation in serviceAtLocations) 
+        foreach (ServiceAtLocations serviceAtLocation in serviceAtLocations)
         {
             string Id = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}";
             ServiceAtLocationDto serviceAtLocationDto = listServiceAtLocationDto.FirstOrDefault(x => x.Id == Id);
@@ -560,20 +450,23 @@ public class PlacecubeMapper
             {
                 listServiceAtLocationDto.Remove(serviceAtLocationDto);
             }
-            
-            List<RegularScheduleDto>  regularSchedules = GetServiceAtLocationRegularSchedules(serviceAtLocation, existingService);
+
+            List<RegularScheduleDto> regularSchedules = GetServiceAtLocationRegularSchedules(serviceAtLocation, existingService);
             List<HolidayScheduleDto> holidaySchedules = GetServiceAtLocationHolidaySchedules(serviceAtLocation, existingService);
 
             List<PhysicalAddressDto> physicalAddressDtos = new List<PhysicalAddressDto>();
-            foreach(var physicalAddress in serviceAtLocation.location.physical_addresses)
+            foreach (var physicalAddress in serviceAtLocation.location.physical_addresses)
             {
+                if (string.IsNullOrEmpty(physicalAddress.address_1) || string.IsNullOrEmpty(physicalAddress.postal_code))
+                    continue;
+
                 string physicalAddressId = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}{physicalAddress.address_1}{physicalAddress.postal_code}";
                 physicalAddressId = physicalAddressId.Replace(",", "").Trim();
                 physicalAddressId = physicalAddressId.Replace(" ", "-");
                 physicalAddressDtos.Add(new PhysicalAddressDto(id: physicalAddressId, address1: physicalAddress.address_1, city: physicalAddress.city, postCode: physicalAddress.postal_code, country: physicalAddress.country, stateProvince: physicalAddress.state_province));
 
             }
-            LocationDto location = new(id: Id, name: serviceAtLocation.location.name, description: serviceAtLocation.location.name, latitude: serviceAtLocation.location.latitude, longitude: serviceAtLocation.location.longitude,physicalAddresses: physicalAddressDtos, linkTaxonomies: new List<LinkTaxonomyDto>(), linkContacts: new List<LinkContactDto>() );
+            LocationDto location = new(id: Id, name: !string.IsNullOrEmpty(serviceAtLocation.location.name) ? serviceAtLocation.location.name : Id, description: !string.IsNullOrEmpty(serviceAtLocation.location.name) ? serviceAtLocation.location.name : Id, latitude: serviceAtLocation.location.latitude, longitude: serviceAtLocation.location.longitude, physicalAddresses: physicalAddressDtos, linkTaxonomies: new List<LinkTaxonomyDto>(), linkContacts: new List<LinkContactDto>());
 
             listServiceAtLocationDto.Add(new ServiceAtLocationDto(id: Id,
                 location: location,
@@ -585,7 +478,7 @@ public class PlacecubeMapper
         return listServiceAtLocationDto;
     }
 
-    private List<LinkContactDto> GetLinkContactDtos(string serviceId, ElmbridgeImporter.Services.Contact[] contacts, ServiceDto existingService)
+    private List<LinkContactDto> GetLinkContactDtos(string serviceId, Contact[] contacts, ServiceDto existingService)
     {
         if (!contacts.Any())
         {
@@ -605,7 +498,7 @@ public class PlacecubeMapper
             {
                 list.Remove(existing);
             }
-           
+
             string phone = default!;
             if (contact != null && contact.phones != null && contact.phones.Any())
             {
@@ -617,13 +510,12 @@ public class PlacecubeMapper
                 continue;
             }
 
-            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact", 
-                contact: new ContactDto(id: contactId, title: contact.title,name: contact.name, telephone: phone, phone,url: null, email: null)));
+            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact",
+                contact: new ContactDto(id: contactId, title: contact.title, name: contact.name, telephone: phone, phone, url: null, email: null)));
         }
 
         return list;
     }
-
 
     private List<LanguageDto> GetLanguages(Language[] languages, ServiceDto existingService)
     {
@@ -646,7 +538,7 @@ public class PlacecubeMapper
             {
                 listLanguageDto.Remove(existing);
             }
-            
+
             listLanguageDto.Add(new LanguageDto(id: serviceAreaId, name: language.language));
         }
 
@@ -680,7 +572,7 @@ public class PlacecubeMapper
             if (!_dictTaxonomies.ContainsKey(taxonomyId))
             {
                 var existingTaxonomy = _alltaxonomies.FirstOrDefault(x => x.Name.ToLower() == taxonomyDto.Name.ToLower());
-                if (existingTaxonomy != null) 
+                if (existingTaxonomy != null)
                 {
                     taxonomyDto.Id = existingTaxonomy.Id;
                 }
@@ -688,12 +580,68 @@ public class PlacecubeMapper
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyDto);
                     _dictTaxonomies[taxonomyId] = taxonomyDto;
-                }  
+                }
             }
 
             listServiceTaxonomyDto.Add(new ServiceTaxonomyDto(id: serviceTaxonomyId, taxonomy: taxonomyDto));
         }
 
         return listServiceTaxonomyDto;
+    }
+
+
+    private DateTime? GetDateFromString(string strDate)
+    {
+        if (string.IsNullOrEmpty(strDate))
+            return null;
+
+        if (DateTime.TryParse(strDate, out DateTime date))
+        {
+            return DateTime.SpecifyKind(date, DateTimeKind.Utc);
+        }
+
+        return null;
+    }
+
+
+    private async Task CreateOrganisationDictionary()
+    {
+        _dictOrganisations = new Dictionary<string, OrganisationWithServicesDto>();
+        List<OrganisationDto> organisations = await _organisationClientService.GetListOrganisations();
+        var hull = organisations.FirstOrDefault(x => x.Name.Contains("Hull"));
+        if (hull == null)
+        {
+            var council = await InitialiseHullCouncil();
+            _dictOrganisations[council.Id] = council;
+        }
+
+        foreach (var organisation in organisations)
+        {
+            OrganisationWithServicesDto organisationWithServicesDto = new OrganisationWithServicesDto(
+                id: organisation.Id,
+                organisationType: organisation.OrganisationType,
+                name: organisation.Name,
+                description: organisation.Description,
+                logo: organisation.Logo,
+                uri: organisation.Uri,
+                url: organisation.Url,
+                services: new List<ServiceDto>(),
+                linkContacts: new List<LinkContactDto>());
+
+            organisationWithServicesDto.AdminAreaCode = _adminAreaCode;
+
+            _dictOrganisations[organisation.Id] = organisationWithServicesDto;
+        }
+    }
+
+    private async Task CreateTaxonomyDictionary()
+    {
+        _dictTaxonomies = new Dictionary<string, TaxonomyDto>();
+        var allTaxonomies = await _organisationClientService.GetTaxonomyList(1, 9999);
+        _alltaxonomies = allTaxonomies.Items;
+        foreach (var taxonomy in allTaxonomies.Items)
+        {
+            _dictTaxonomies[taxonomy.Id] = taxonomy;
+        }
     }
 }

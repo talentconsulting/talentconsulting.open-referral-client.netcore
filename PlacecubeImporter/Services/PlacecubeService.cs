@@ -15,23 +15,23 @@
         public string attending_access { get; set; }
         public string pc_attendingAccess_additionalInfo { get; set; }
         public string assured_date { get; set; }
-        public Service_Area[] service_areas { get; set; }
+        public ServiceArea[] service_areas { get; set; }
         public Funding[] fundings { get; set; }
-        public Regular_Schedule[] regular_schedules { get; set; }
+        public RegularSchedule[] regular_schedules { get; set; }
         public Eligibility[] eligibilitys { get; set; }
-        public Service_At_Location[] service_at_locations { get; set; }
-        public Cost_Options[] cost_options { get; set; }
+        public ServiceAtLocation[] service_at_locations { get; set; }
+        public CostOptions[] cost_options { get; set; }
         public object[] reviews { get; set; }
         public Organization organization { get; set; }
         public Contact[] contacts { get; set; }
         public HolidaySchedule[] holiday_schedules { get; set; }
-        public Service_Taxonomys[] service_taxonomys { get; set; }
+        public ServiceTaxonomys[] service_taxonomys { get; set; }
         public Language[] languages { get; set; }
-        public Pc_Metadata pc_metadata { get; set; }
-        public Pc_Targetaudience[] pc_targetAudience { get; set; }
+        public PcMetadata pc_metadata { get; set; }
+        public PcTargetaudience[] pc_targetAudience { get; set; }
     }
 
-    public class Cost_Options
+    public class CostOptions
     {
         public string id { get; set; }
         public string service_id { get; set; }
@@ -65,16 +65,16 @@
         public string language { get; set; }
     }
 
-    public class Service_Area
+    public class ServiceArea
     {
         public string service_area { get; set; }
         public string extent { get; set; }
         public string id { get; set; }
     }
 
-    public class Service_At_Location
+    public class ServiceAtLocation
     {
-        public Regular_Schedule[] regular_schedule { get; set; }
+        public RegularSchedule[] regular_schedule { get; set; }
         public HolidaySchedule[] holidayScheduleCollection { get; set; }
         public Location location { get; set; }
     }
@@ -94,20 +94,20 @@
 
     public class Location
     {
-        public Accessibility_For_Disabilities[] accessibility_for_disabilities { get; set; }
-        public Physical_Addresses[] physical_addresses { get; set; }
+        public AccessibilityForDisabilities[] accessibility_for_disabilities { get; set; }
+        public PhysicalAddresses[] physical_addresses { get; set; }
         public string id { get; set; }
         public float latitude { get; set; }
         public float longitude { get; set; }
         public string name { get; set; }
     }
 
-    public class Accessibility_For_Disabilities
+    public class AccessibilityForDisabilities
     {
         public string accessibility { get; set; }
     }
 
-    public class Physical_Addresses
+    public class PhysicalAddresses
     {
         public string address_1 { get; set; }
         public string postal_code { get; set; }
@@ -116,7 +116,7 @@
         public string country { get; set; }
     }
 
-    public class Regular_Schedule
+    public class RegularSchedule
     {
         public string closes_at { get; set; }
         public string opens_at { get; set; }
@@ -144,7 +144,7 @@
         public string number { get; set; }
     }
 
-    public class Service_Taxonomys
+    public class ServiceTaxonomys
     {
         public string id { get; set; }
         public Taxonomy taxonomy { get; set; }

@@ -10,7 +10,7 @@ using talentconsulting.open_referral_client.Interfaces;
 
 namespace ElmbridgeImporter
 {
-    public class PlacecubeCommand : ICommand
+    public class PlacecubeCommand : IDataInputCommand
     {
         public string Name { get => "DataImporter"; }
         public string Description { get => "Imports Placecube Data."; }
@@ -20,7 +20,7 @@ namespace ElmbridgeImporter
             List<CommandItem> commandItems = new() 
             { 
                 new CommandItem() { Name = "Pennine Lancashire", BaseUrl = "https://penninelancs.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E10000017" },
-                new CommandItem() { Name = "Noth Lincs", BaseUrl = "https://northlincs.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E06000013" },
+                new CommandItem() { Name = "North Lincs", BaseUrl = "https://northlincs.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E06000013" },
                 new CommandItem() { Name = "Elmbridge", BaseUrl = "https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E10000030" }
             };
 

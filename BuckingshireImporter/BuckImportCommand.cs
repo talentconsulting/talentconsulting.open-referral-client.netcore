@@ -7,7 +7,7 @@ using talentconsulting.open_referral_client.Interfaces;
 
 namespace BuckinghamshireImport
 {
-    public class BuckImportCommand : ICommand
+    public class BuckImportCommand : IDataInputCommand
     {
         public string Name { get => "DataImporter"; }
         public string Description { get => "Imports Buckinghamshire Data."; }

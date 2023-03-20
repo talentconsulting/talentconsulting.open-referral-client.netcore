@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PluginBase
 {
-    public interface ICommand
+    public interface IDataInputCommand
     {
         string Name { get; }
         string Description { get; }

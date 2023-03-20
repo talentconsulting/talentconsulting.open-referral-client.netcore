@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using PluginBase;
+using System.Security.AccessControl;
 
 namespace AppWithPlugin
 {
@@ -44,10 +45,12 @@ namespace AppWithPlugin
                 string[] pluginPaths = new string[]
                 {
                     @"BuckingshireImporter\bin\Debug\net7.0\BuckingshireImporter.dll",
-                    @"PlacecubeImporter\bin\Debug\net7.0\PlacecubeImporter.dll",
+                    "PlacecubeImporter\bin\Debug\net7.0\PlacecubeImporter.dll",
+                    @"PublicPartnershipImporter\bin\Debug\net7.0\PublicPartnershipImporter.dll",
+                    
                 };
 
-                IEnumerable<ICommand> commands = pluginPaths.SelectMany(pluginPath =>
+                IEnumerable<IDataInputCommand> commands = pluginPaths.SelectMany(pluginPath =>
                 {
                     Assembly pluginAssembly = LoadPlugin(pluginPath);
                     return CreateCommands(pluginAssembly);
@@ -55,7 +58,7 @@ namespace AppWithPlugin
 
                 
 
-                List<ICommand> plugins = commands.Where(c => c.Name == "DataImporter").ToList();
+                List<IDataInputCommand> plugins = commands.Where(c => c.Name == "DataImporter").ToList();
                 if (plugins != null)
                 {
                     foreach (var command in plugins) 
@@ -89,12 +92,13 @@ namespace AppWithPlugin
             return loadContext.LoadFromAssemblyName(AssemblyName.GetAssemblyName(pluginLocation));
         }
 
-        static IEnumerable<ICommand> CreateCommands(Assembly assembly)
+        static IEnumerable<IDataInputCommand> CreateCommands(Assembly assembly)
         {
             int count = 0;
             foreach (var result in from Type type in assembly.GetTypes()
-                                   where typeof(ICommand).IsAssignableFrom(type)
-                                   let result = Activator.CreateInstance(type) as ICommand
+                                   //where type.IsAssignableFrom(typeof(ICommand))
+                                   where typeof(IDataInputCommand).IsAssignableFrom(type)
+                                   let result = Activator.CreateInstance(type) as IDataInputCommand
                                    where result != null
                                    select result)
             {
