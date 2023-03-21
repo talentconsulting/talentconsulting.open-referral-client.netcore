@@ -4,9 +4,6 @@ using PublicPartnershipImporter.Service;
 using ServiceDirectory;
 using System;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using talentconsulting.open_referral_client;
-using talentconsulting.open_referral_client.Interfaces;
 
 namespace HelloPlugin
 {

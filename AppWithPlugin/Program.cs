@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using PluginBase;
 using System.Security.AccessControl;
+using System.Diagnostics;
 
 namespace AppWithPlugin
 {
@@ -47,7 +48,8 @@ namespace AppWithPlugin
                     @"BuckingshireImporter\bin\Debug\net7.0\BuckingshireImporter.dll",
                     @"PlacecubeImporter\bin\Debug\net7.0\PlacecubeImporter.dll",
                     @"PublicPartnershipImporter\bin\Debug\net7.0\PublicPartnershipImporter.dll",
-                    
+                    @"SouthamptonImporter\bin\Debug\net7.0\SouthamptonImporter.dll"
+
                 };
 
                 IEnumerable<IDataInputCommand> commands = pluginPaths.SelectMany(pluginPath =>

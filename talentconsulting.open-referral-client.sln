@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlacecubeImporter", "Placec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublicPartnershipImporter", "PublicPartnershipImporter\PublicPartnershipImporter.csproj", "{F8A86B5E-21D3-4B50-8749-4B45AF18EFEA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SouthamptonImporter", "SouthamptonImporter\SouthamptonImporter.csproj", "{1175E77A-2E41-452D-A3AB-15825D619A05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{F8A86B5E-21D3-4B50-8749-4B45AF18EFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8A86B5E-21D3-4B50-8749-4B45AF18EFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8A86B5E-21D3-4B50-8749-4B45AF18EFEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1175E77A-2E41-452D-A3AB-15825D619A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1175E77A-2E41-452D-A3AB-15825D619A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1175E77A-2E41-452D-A3AB-15825D619A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1175E77A-2E41-452D-A3AB-15825D619A05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
