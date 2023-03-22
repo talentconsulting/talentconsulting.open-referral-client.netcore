@@ -2,10 +2,12 @@
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PluginBase;
 using PublicPartnershipImporter.Service;
 using ServiceDirectory;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +21,7 @@ public class PublicPartnershipMapper
     private readonly IPublicPartnershipClientService _publicPartnershipClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly string _adminAreaCode;
+    private List<TaxonomyDto> _extraTaxonomies;
 
     public string Name => "PublicPartnership Mapper";
 
@@ -27,20 +30,21 @@ public class PublicPartnershipMapper
         _publicPartnershipClientService = publicPartnershipClientService;
         _organisationClientService = organisationClientService;
         _adminAreaCode = adminAreaCode;
+        _extraTaxonomies = new List<TaxonomyDto>();
     }
 
     private async Task<OrganisationWithServicesDto> InitialiseHullCouncil()
     {
 #pragma warning disable S1075 // URIs should not be hardcoded
-        var elmbridgeCouncil = new OrganisationWithServicesDto(
+        var hullCouncil = new OrganisationWithServicesDto(
         "b1019f49-1dc3-4ef2-8d47-1e6363b87123",
             new OrganisationTypeDto("1", "LA", "Local Authority"), "Hull City Council", "Hull City Council", null, new Uri("https://www.hull.gov.uk/").ToString(), "https://www.hull.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
 
-        elmbridgeCouncil.AdminAreaCode = _adminAreaCode;
+        hullCouncil.AdminAreaCode = _adminAreaCode;
 
-        await _organisationClientService.CreateOrganisation(elmbridgeCouncil);
+        await _organisationClientService.CreateOrganisation(hullCouncil);
 
-        return elmbridgeCouncil;
+        return hullCouncil;
 #pragma warning restore S1075 // URIs should not be hardcoded
     }
 
@@ -71,8 +75,17 @@ public class PublicPartnershipMapper
 
             Console.WriteLine($"Completed Page {i} of {totalPages} with {errorCount} errors");
         }
-        
-        
+
+        string filepath = $@"{Helper.AssemblyDirectory}\Hull-ExtraTaxonomies.txt";
+        if (File.Exists(filepath))
+            File.Delete(filepath);
+        using (var file = File.CreateText(filepath))
+        {
+            foreach (var taxonomy in _extraTaxonomies)
+            {
+                file.WriteLine(taxonomy.Name);
+            }
+        }
     }
 
     private async Task<List<string>> AddOrUpdateDirectoryService(bool newOrganisation, OrganisationWithServicesDto serviceDirectoryOrganisation, ServiceDto newService, string serviceId, List<string> errors)
@@ -579,6 +592,7 @@ public class PublicPartnershipMapper
                 else
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyDto);
+                    _extraTaxonomies.Add(taxonomyDto);
                     _dictTaxonomies[taxonomyId] = taxonomyDto;
                 }
             }

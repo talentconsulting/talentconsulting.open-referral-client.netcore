@@ -3,9 +3,11 @@ using FamilyHubs.ServiceDirectory.Shared.Builders;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Pipelines.Sockets.Unofficial.Arenas;
+using PluginBase;
 using ServiceDirectory;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,14 +21,21 @@ public class PlacecubeMapper
     private readonly IPlacecubeClientService _elmbridgeClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly string _adminAreaCode;
- 
+    private readonly string _key;
+    private readonly OrganisationWithServicesDto _parentLA;
+    private List<TaxonomyDto> _extraTaxonomies;
+
+
     public string Name => "Elmbridge Mapper";
 
-    public PlacecubeMapper(IPlacecubeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode)
+    public PlacecubeMapper(IPlacecubeClientService elmbridgeClientService, IOrganisationClientService organisationClientService, string adminAreaCode, string key, OrganisationWithServicesDto parentLA)
     {
         _elmbridgeClientService = elmbridgeClientService;
         _organisationClientService = organisationClientService;
         _adminAreaCode = adminAreaCode;
+        _key = key;
+        _parentLA = parentLA;
+        _extraTaxonomies = new List<TaxonomyDto>();
     }
 
     public async Task AddOrUpdateServices()
@@ -42,6 +51,17 @@ public class PlacecubeMapper
         for (int i = startPage + 1; i <= totalPages;  i++) 
         {
             await LoopSimpleServices(i, totalPages);
+        }
+
+        string filepath = $@"{Helper.AssemblyDirectory}\{_key}-Taxonomies.txt";
+        if (File.Exists(filepath))
+            File.Delete(filepath);
+        using (var file = File.CreateText(filepath))
+        {
+            foreach (var taxonomy in _extraTaxonomies)
+            {
+                file.WriteLine(taxonomy.Name);
+            }
         }
     }
 
@@ -258,18 +278,12 @@ public class PlacecubeMapper
         return null;
     }
 
-    private async Task<OrganisationWithServicesDto> InitialiseElmbridgeCouncil()
+    private async Task<OrganisationWithServicesDto> InitialiseCouncil()
     {
 #pragma warning disable S1075 // URIs should not be hardcoded
-        var elmbridgeCouncil = new OrganisationWithServicesDto(
-        "ddafc1ea-089c-40ba-9b41-b1a8739fb628",
-            new OrganisationTypeDto("1", "LA", "Local Authority"), "Elmbridge Council", "Elmbridge Council", null, new Uri("https://www.elmbridge.gov.uk/").ToString(), "https://www.elmbridge.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
+        await _organisationClientService.CreateOrganisation(_parentLA);
 
-        elmbridgeCouncil.AdminAreaCode = _adminAreaCode;
-
-        await _organisationClientService.CreateOrganisation(elmbridgeCouncil);
-
-        return elmbridgeCouncil;
+        return _parentLA;
 #pragma warning restore S1075 // URIs should not be hardcoded
     }
 
@@ -277,11 +291,11 @@ public class PlacecubeMapper
     {
         _dictOrganisations = new Dictionary<string, OrganisationWithServicesDto>();
         List<OrganisationDto> organisations = await _organisationClientService.GetListOrganisations();
-        var elmbridge = organisations.FirstOrDefault(x => x.Name.Contains("Elmbridge"));
-        if (elmbridge == null) 
+        var localAuthority = organisations.FirstOrDefault(x => x.Name.Contains(_key));
+        if (localAuthority == null) 
         {
-            var buckCouncil = await InitialiseElmbridgeCouncil();
-            _dictOrganisations[buckCouncil.Id] = buckCouncil;
+            var council = await InitialiseCouncil();
+            _dictOrganisations[council.Id] = council;
         }
         
         foreach (var organisation in organisations)
@@ -687,6 +701,7 @@ public class PlacecubeMapper
                 else
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyDto);
+                    _extraTaxonomies.Add(taxonomyDto);
                     _dictTaxonomies[taxonomyId] = taxonomyDto;
                 }  
             }

@@ -1,6 +1,7 @@
 ﻿using FamilyHubs.ServiceDirectory.Shared.Builders;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
+using PluginBase;
 using ServiceDirectory;
 using SouthamptonImporter.Service;
 
@@ -16,6 +17,7 @@ public class SouthamptonMapper
     private readonly ISouthamptonClientService _southamptonClientService;
     private readonly IOrganisationClientService _organisationClientService;
     private readonly string _adminAreaCode;
+    private List<TaxonomyDto> _extraTaxonomies;
 
     public string Name => "PublicPartnership Mapper";
 
@@ -24,6 +26,7 @@ public class SouthamptonMapper
         _southamptonClientService = southamptonClientService;
         _organisationClientService = organisationClientService;
         _adminAreaCode = adminAreaCode;
+        _extraTaxonomies = new List<TaxonomyDto>();
     }
 
     private async Task<OrganisationWithServicesDto> InitialiseHullCouncil()
@@ -69,6 +72,18 @@ public class SouthamptonMapper
                 }
 
                 Console.WriteLine($"Completed Page {i} of {totalPages} with {errorCount} errors");
+            }
+
+            string filepath = $@"{Helper.AssemblyDirectory}\Southampton-ExtraTaxonomies.txt";
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            using (var file = File.CreateText(filepath))
+            {
+                foreach (var taxonomy in _extraTaxonomies)
+                {
+                    file.WriteLine(taxonomy.Name);
+                }
             }
         }
         catch (Exception ex) 
@@ -597,6 +612,7 @@ public class SouthamptonMapper
                 else
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyDto);
+                    _extraTaxonomies.Add(taxonomyDto);
                     _dictTaxonomies[taxonomyId] = taxonomyDto;
                 }
             }

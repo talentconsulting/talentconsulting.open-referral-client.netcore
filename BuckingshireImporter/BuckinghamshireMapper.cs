@@ -2,10 +2,13 @@
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using IdGen;
+using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json.Linq;
+using PluginBase;
 using ServiceDirectory;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using talentconsulting.open_referral_client.Interfaces;
@@ -18,10 +21,12 @@ public class BuckinghamshireMapper
 {
     private Dictionary<string, OrganisationWithServicesDto> _dictOrganisations;
     private Dictionary<string, TaxonomyDto> _dictTaxonomies;
+    private List<TaxonomyDto> _extraTaxonomies;
     private readonly HashSet<string> _linkTaxIds;
     private readonly IOpenReferralClient _openReferralClient;
     private readonly IOrganisationClientService _organisationClientService;
     private const string _adminAreaCode = "E06000060";
+    private const int _maxRetry = 3;
  
     public string Name => "Buckinghamshire Mapper";
 
@@ -30,6 +35,7 @@ public class BuckinghamshireMapper
         _openReferralClient = openReferralClient;
         _organisationClientService = organisationClientService;
         _linkTaxIds = new HashSet<string>();
+        _extraTaxonomies = new List<TaxonomyDto>();
     }
 
     public async Task AddOrUpdateServices()
@@ -43,10 +49,51 @@ public class BuckinghamshireMapper
         Console.WriteLine($"Completed Page {startPage} {totalPages} with {errors} errors");
         for (int i = startPage + 1; i <= totalPages;  i++) 
         {
-            services = await _openReferralClient.GetPageServices(i);
+            int retry = 0;
+            while(retry < _maxRetry) 
+            {
+                try
+                {
+                    services = await _openReferralClient.GetPageServices(i);
+                    retry = _maxRetry;
+                }
+                catch
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    retry++;
+                    if (retry > _maxRetry)
+                    {
+                        Console.WriteLine($"Failed to get page");
+
+                        Console.WriteLine("Extra Taxonomies:");
+                        foreach (var taxonomy in _extraTaxonomies)
+                        {
+                            Console.WriteLine(taxonomy.Name);
+                        }
+
+                        return;
+
+                    }
+                    Console.WriteLine($"Doing retry: {retry}");
+                }
+            }
+            
+            
             errors = await AddAndUpdateServices(services);
 
             Console.WriteLine($"Completed Page {i} of {totalPages} with {errors} errors");
+        }
+
+
+        string filepath = $@"{Helper.AssemblyDirectory}\Bucks-ExtraTaxonomies.txt";
+        if (File.Exists(filepath))
+            File.Delete(filepath);
+        using (var file = File.CreateText(filepath))
+        {
+            foreach (var taxonomy in _extraTaxonomies)
+            {
+                file.WriteLine(taxonomy.Name);
+            }
         }
     }
 
@@ -383,6 +430,7 @@ public class BuckinghamshireMapper
                 if (!_dictTaxonomies.ContainsKey(taxonomyId))
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyItem);
+                    _extraTaxonomies.Add(taxonomyItem);
                     _dictTaxonomies[taxonomyItem.Id]=taxonomyItem;
                 }
 
