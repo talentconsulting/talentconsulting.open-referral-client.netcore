@@ -122,6 +122,7 @@ public class SouthamptonMapper
                 organisationWithServicesDto.Services = new List<ServiceDto>();
             }
 
+            organisationWithServicesDto.Services = organisationWithServicesDto.Services.Where(x => x.Id != newService.Id).ToList();
             organisationWithServicesDto.Services.Add(newService);
 
             try
