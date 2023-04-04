@@ -134,6 +134,14 @@ public class PlacecubeMapper
     private async Task<int> AddAndUpdateSimpleService(Content elmbridgeSimpleService)
     {
         List<string> errors = new List<string>();
+        if (elmbridgeSimpleService.organization == null)
+        {
+            string error = $"Organisation is null for service id: {elmbridgeSimpleService.id}";
+            errors.Add(error);
+            Console.WriteLine(error);
+            return errors.Count;
+        }
+
         string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeSimpleService.id}";
         OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
@@ -196,6 +204,13 @@ public class PlacecubeMapper
     private async Task<int> AddAndUpdateService(PlacecubeService elmbridgeService)
     {
         List<string> errors = new List<string>();
+        if (elmbridgeService.organization == null)
+        {
+            string error = $"Organisation is null for service id: {elmbridgeService.id}";
+            errors.Add(error);
+            Console.WriteLine(error);
+            return errors.Count;
+        }
         string serviceId = $"{_adminAreaCode.Replace("E", "")}{elmbridgeService.id}";
         OrganisationWithServicesDto serviceDirectoryOrganisation = default!;
 
@@ -567,15 +582,23 @@ public class PlacecubeMapper
             listServiceAtLocationDto = existingService.ServiceAtLocations.ToList();
         }
 
+        HashSet<string> hashLocationId = new HashSet<string>();
+
         foreach (ServiceAtLocation serviceAtLocation in serviceAtLocations) 
         {
+            if (hashLocationId.Contains(serviceAtLocation.location.id))
+            {
+                continue;
+            }
             string Id = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}";
             ServiceAtLocationDto serviceAtLocationDto = listServiceAtLocationDto.FirstOrDefault(x => x.Id == Id);
             if (serviceAtLocationDto != null)
             {
                 listServiceAtLocationDto.Remove(serviceAtLocationDto);
             }
-            
+
+            hashLocationId.Add(serviceAtLocation.location.id);
+
             List<RegularScheduleDto>  regularSchedules = GetServiceAtLocationRegularSchedules(serviceAtLocation, existingService);
             List<HolidayScheduleDto> holidaySchedules = GetServiceAtLocationHolidaySchedules(serviceAtLocation, existingService);
 
@@ -709,6 +732,9 @@ public class PlacecubeMapper
 
             listServiceTaxonomyDto.Add(new ServiceTaxonomyDto(id: serviceTaxonomyId, taxonomy: taxonomyDto));
         }
+
+        var distinctItems = listServiceTaxonomyDto.GroupBy(x => x.Taxonomy.Id).Select(y => y.First());
+        listServiceTaxonomyDto = distinctItems.ToList();
 
         return listServiceTaxonomyDto;
     }

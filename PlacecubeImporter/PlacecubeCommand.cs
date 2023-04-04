@@ -33,11 +33,20 @@ namespace ElmbridgeImporter
             new OrganisationTypeDto("1", "LA", "Local Authority"), "Pennine Lancashire", "Pennine Lancashire", null, new Uri("https://healthierpenninelancashire.co.uk/").ToString(), "https://healthierpenninelancashire.co.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
             elmbridgeCouncil.AdminAreaCode = "E10000017";
 
+
+            var bristolCouncil = new OrganisationWithServicesDto(
+        "72e653e8-1d05-4821-84e9-9177571a6013",
+            new OrganisationTypeDto("1", "LA", "Local Authority"), "Bristol County Council", "Bristol County Council", null, new Uri("https://www.bristol.gov.uk/").ToString(), "https://www.bristol.gov.uk/", new List<ServiceDto>(), new List<LinkContactDto>());
+            bristolCouncil.AdminAreaCode = "E06000023";
+
+
+
             List<CommandItem> commandItems = new() 
             { 
                 new CommandItem() { Name = "Pennine Lancashire", BaseUrl = "https://penninelancs.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E10000017", ParentOrganisation = pennineLancashire },
                 new CommandItem() { Name = "North Lincolnshire Council", BaseUrl = "https://northlincs.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E06000013", ParentOrganisation = northLincCouncil },
-                new CommandItem() { Name = "Elmbridge Council", BaseUrl = "https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E10000030", ParentOrganisation = elmbridgeCouncil }
+                new CommandItem() { Name = "Elmbridge Council", BaseUrl = "https://elmbridge.openplace.directory/o/ServiceDirectoryService/v2", AdminAreaCode = "E10000030", ParentOrganisation = elmbridgeCouncil },
+                new CommandItem() { Name = bristolCouncil.Name, BaseUrl = "https://bristol.openplace.directory/o/ServiceDirectoryService/v2/", AdminAreaCode = bristolCouncil.AdminAreaCode, ParentOrganisation = bristolCouncil }
             };
 
             foreach (var commandItem in commandItems) 

@@ -456,8 +456,17 @@ public class PublicPartnershipMapper
             listServiceAtLocationDto = existingService.ServiceAtLocations.ToList();
         }
 
+        HashSet<string> hashLocationId = new HashSet<string>();
+
         foreach (ServiceAtLocations serviceAtLocation in serviceAtLocations)
         {
+            if (hashLocationId.Contains(serviceAtLocation.location.id))
+            {
+                continue;
+            }
+
+            hashLocationId.Add(serviceAtLocation.location.id);
+
             string Id = $"{_adminAreaCode.Replace("E", "")}{serviceAtLocation.location.id}";
             ServiceAtLocationDto serviceAtLocationDto = listServiceAtLocationDto.FirstOrDefault(x => x.Id == Id);
             if (serviceAtLocationDto != null)

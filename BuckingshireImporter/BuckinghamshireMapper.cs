@@ -398,8 +398,17 @@ public class BuckinghamshireMapper
             list = existingService.ServiceAtLocations.ToList();
         }
 
+        HashSet<int> hashLocationId = new HashSet<int>();
+
         foreach (var location in locations)
         {
+            if (hashLocationId.Contains(location.Id))
+            {
+                continue;
+            }
+
+            hashLocationId.Add(location.Id);
+
             string locationId = $"{_adminAreaCode.Replace("E", "")}{location.Id.ToString().ToString()}";
            
             var physicalAddresses = new List<PhysicalAddressDto>()
