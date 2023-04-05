@@ -112,15 +112,25 @@ public class BuckinghamshireMapper
             {
                 serviceDirectoryOrganisation = _dictOrganisations[organisationId];
                 //Get latest
-                serviceDirectoryOrganisation = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+                try
+                {
+                    serviceDirectoryOrganisation = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+                }
+                catch(Exception ex) 
+                {
+                    errors.Add($"Failed to Get Organisation with Id:{serviceDirectoryOrganisation.Id} {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine("Got Here!");
+                    continue;
+                }
+                
             }
             else
             {
                 serviceDirectoryOrganisation = new OrganisationWithServicesDto(
                 id: organisationId,
                 organisationType: new OrganisationTypeDto("2", "VCFS", "Voluntary, Charitable, Faith Sector"),
-                name: service.Organisation.Name,
-                description: service.Organisation.Description,
+                name: service.Organisation.Name.Truncate(45, "..."),
+                description: service.Organisation.Description.Truncate(495, "..."),
                 logo: default!,
                 uri: default!,
                 url: default!,
@@ -141,8 +151,8 @@ public class BuckinghamshireMapper
                 id: serviceId,
                 serviceType: new ServiceTypeDto("1", "Information Sharing", ""),
                 organisationId: serviceDirectoryOrganisation.Id,
-                name: service.Name,
-                description: service.Description,
+                name: service.Name.Truncate(45, "..."),
+                description:  service.Description.Truncate(495,"..."),
                 accreditations: null,
                 assuredDate: null,
                 attendingAccess: null,
@@ -174,8 +184,20 @@ public class BuckinghamshireMapper
             }
             else
             {
+
+                OrganisationWithServicesDto organisationWithServicesDto = default!;
                 
-                OrganisationWithServicesDto organisationWithServicesDto = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+                try
+                {
+                    organisationWithServicesDto = await _organisationClientService.GetOrganisationById(serviceDirectoryOrganisation.Id);
+                }
+                catch(Exception ex)
+                {
+                    errors.Add($"Failed to Get Organisation when updating with Id:{serviceDirectoryOrganisation.Id} {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine("Got Here!");
+                    continue;
+                }
+                
                 if (organisationWithServicesDto.Services == null)
                 {
                     organisationWithServicesDto.Services = new List<ServiceDto>();
@@ -234,8 +256,8 @@ public class BuckinghamshireMapper
             OrganisationWithServicesDto organisationWithServicesDto = new OrganisationWithServicesDto(
                 id: organisation.Id,
                 organisationType: organisation.OrganisationType,
-                name: organisation.Name,
-                description: organisation.Description,
+                name: organisation.Name.Truncate(45, "..."),
+                description: organisation.Description.Truncate(45, "..."),
                 logo: organisation.Logo,
                 uri: organisation.Uri,
                 url: organisation.Url,
@@ -379,7 +401,7 @@ public class BuckinghamshireMapper
                 }
             }
             
-            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact", new ContactDto(id: contactId, title: contact.Title, name: contact.Name ?? "Contact", telephone: contact.Phone, textPhone: contact.Phone, url: null, email: contact.Email)));
+            list.Add(new LinkContactDto(id: contactId, linkId: serviceId, linkType: "ServiceContact", new ContactDto(id: contactId, title: contact.Title.Truncate(45), name: contact.Name ?? "Contact", telephone: contact.Phone, textPhone: contact.Phone, url: null, email: contact.Email)));
         }
 
         return list;
@@ -393,10 +415,10 @@ public class BuckinghamshireMapper
         }
 
         var list = new List<ServiceAtLocationDto>();
-        if (existingService != null) 
-        {
-            list = existingService.ServiceAtLocations.ToList();
-        }
+        //if (existingService != null) 
+        //{
+        //    list = existingService.ServiceAtLocations.ToList();
+        //}
 
         HashSet<int> hashLocationId = new HashSet<int>();
 
@@ -409,11 +431,11 @@ public class BuckinghamshireMapper
 
             hashLocationId.Add(location.Id);
 
-            string locationId = $"{_adminAreaCode.Replace("E", "")}{location.Id.ToString().ToString()}";
+            string locationId = $"{_adminAreaCode.Replace("E", "")}{location.Id.ToString()}";
            
             var physicalAddresses = new List<PhysicalAddressDto>()
             {
-                new PhysicalAddressDto(id: locationId, address1: GetValueFromDictionary("address_1", location.Data), city: GetValueFromDictionary("city", location.Data), postCode: GetValueFromDictionary("postal_code", location.Data), country: GetValueFromDictionary("country", location.Data), stateProvince: GetValueFromDictionary("state_province", location.Data))
+                new PhysicalAddressDto(id: locationId, address1: GetValueFromDictionary("address_1", location.Data).Truncate(45,"..."), city: GetValueFromDictionary("city", location.Data), postCode: GetValueFromDictionary("postal_code", location.Data), country: GetValueFromDictionary("country", location.Data), stateProvince: GetValueFromDictionary("state_province", location.Data))
             };
 
             var listRegularSchedules = new List<RegularScheduleDto>();
@@ -425,7 +447,8 @@ public class BuckinghamshireMapper
             var listtaxonomies = new List<LinkTaxonomyDto>();
             foreach (var taxonomy in taxonomies)
             {
-                string linktaxonomyId = $"{serviceId}{location.Id.ToString().ToString()}{taxonomy.Id.ToString().ToString()}";
+                //string linktaxonomyId = $"{serviceId}{location.Id.ToString().ToString()}{taxonomy.Id.ToString().ToString()}";
+                string linktaxonomyId = $"{location.Id.ToString().ToString()}{taxonomy.Id.ToString().ToString()}";
                 if (!_linkTaxIds.Contains(linktaxonomyId))
                 {
                     _linkTaxIds.Add(linktaxonomyId);
@@ -433,10 +456,11 @@ public class BuckinghamshireMapper
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Duplicate");
+                    continue;
                 }
 
                 string taxonomyId = $"{_adminAreaCode.Replace("E", "")}{taxonomy.Id.ToString().ToString()}";
-                TaxonomyDto taxonomyItem = new TaxonomyDto(taxonomyId, taxonomy.Name.Trim(), taxonomyType: TaxonomyType.ServiceCategory, parent: null);
+                TaxonomyDto taxonomyItem = new TaxonomyDto(taxonomyId, taxonomy.Name.Trim().Truncate(45, "..."), taxonomyType: TaxonomyType.ServiceCategory, parent: null);
                 if (!_dictTaxonomies.ContainsKey(taxonomyId))
                 {
                     _organisationClientService.CreateTaxonomy(taxonomyItem);
